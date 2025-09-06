@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { api } from '../../lib/api';
 import { saveTokens, clearTokens } from '../../utils/token';
+import { userStorage, tokenStorage } from '../../utils/storage';
 
 // Types
 export interface User {
@@ -38,8 +39,10 @@ export const loginAsync = createAsyncThunk(
         throw new Error('No token received');
       }
 
-      // Lưu token vào storage
+      // Lưu token và user vào storage
       saveTokens(token, undefined, remember);
+      tokenStorage.save(token, undefined, remember);
+      userStorage.save(user, remember);
       
       return { user, token };
     } catch (error: any) {
@@ -157,6 +160,8 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.error = null;
       clearTokens();
+      userStorage.clear();
+      tokenStorage.clear();
     },
     clearError: (state) => {
       state.error = null;
@@ -170,6 +175,8 @@ const authSlice = createSlice({
     updateUser: (state, action: PayloadAction<Partial<User>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
+        // Cập nhật storage
+        userStorage.update(action.payload);
       }
     },
   },

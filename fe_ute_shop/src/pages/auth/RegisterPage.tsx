@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { FormEvent } from "react";
-import { Input } from "../components/UI/Input";
-import { Button } from "../components/UI/Button";
-import { useAppDispatch, useAppState } from "../store/hooks";
-import { registerAsync, clearError } from "../store/slices/authSlice";
+import { Input } from "../../components/UI/Input.tsx";
+import { Button } from "../../components/UI/Button.tsx";
+import { useAppDispatch, useAppState } from "../../store/hooks.ts";
+import { registerAsync, clearError } from "../../store/slices/authSlice.ts";
 
 type Errors = Partial<
     Record<

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppState } from "../store/hooks";
-import { getProfileAsync, updateProfileAsync, changePasswordAsync } from "../store/slices/userSlice";
-import { logout } from "../store/slices/authSlice";
-import { Button } from "../components/UI/Button";
-import { Input } from "../components/UI/Input";
+import { useAppDispatch, useAppState } from "../../store/hooks.ts";
+import { getProfileAsync, updateProfileAsync, changePasswordAsync } from "../../store/slices/userSlice.ts";
+import { logout } from "../../store/slices/authSlice.ts";
+import { Button } from "../../components/UI/Button.tsx";
+import { Input } from "../../components/UI/Input.tsx";
 
 function initialsOf(name: string) {
     const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -22,7 +22,7 @@ export default function ProfileView() {
 
     const [isEditing, setIsEditing] = useState(false);
     const [isChangingPassword, setIsChangingPassword] = useState(false);
-    
+
     // Edit form state
     const [editForm, setEditForm] = useState({
         fullName: "",
@@ -44,7 +44,7 @@ export default function ProfileView() {
             navigate("/login");
             return;
         }
-        
+
         // Load profile data
         dispatch(getProfileAsync());
     }, [isAuthenticated, navigate, dispatch]);
@@ -75,12 +75,12 @@ export default function ProfileView() {
 
     const handleChangePassword = async () => {
         setPasswordError("");
-        
+
         if (passwordForm.newPassword !== passwordForm.confirmPassword) {
             setPasswordError("Passwords do not match");
             return;
         }
-        
+
         if (passwordForm.newPassword.length < 6) {
             setPasswordError("Password must be at least 6 characters");
             return;
@@ -90,7 +90,7 @@ export default function ProfileView() {
             currentPassword: passwordForm.currentPassword,
             newPassword: passwordForm.newPassword
         }));
-        
+
         if (changePasswordAsync.fulfilled.match(resultAction)) {
             setIsChangingPassword(false);
             setPasswordForm({
@@ -162,10 +162,10 @@ export default function ProfileView() {
                     />
                                     {currentUser.isVerified ? "Đã xác minh" : "Chưa xác minh"}
                   </span>
-                                
-                                <Button 
-                                    onClick={() => setIsEditing(!isEditing)} 
-                                    variant="ghost" 
+
+                                <Button
+                                    onClick={() => setIsEditing(!isEditing)}
+                                    variant="ghost"
                                     size="sm"
                                 >
                                     {isEditing ? "Cancel" : "Edit"}
@@ -240,13 +240,13 @@ export default function ProfileView() {
 
                             {isEditing && (
                                 <div className="md:col-span-2 flex gap-3 justify-end">
-                                    <Button 
-                                        onClick={() => setIsEditing(false)} 
+                                    <Button
+                                        onClick={() => setIsEditing(false)}
                                         variant="ghost"
                                     >
                                         Cancel
                                     </Button>
-                                    <Button 
+                                    <Button
                                         onClick={handleUpdateProfile}
                                         loading={isLoading}
                                     >
@@ -262,13 +262,13 @@ export default function ProfileView() {
                         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
                             <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 w-full max-w-md border border-white/20">
                                 <h3 className="text-xl font-semibold mb-4">Change Password</h3>
-                                
+
                                 {passwordError && (
                                     <div className="mb-4 text-sm text-red-200 bg-red-500/20 rounded p-2">
                                         {passwordError}
                                     </div>
                                 )}
-                                
+
                                 {error && (
                                     <div className="mb-4 text-sm text-red-200 bg-red-500/20 rounded p-2">
                                         {error}
@@ -282,14 +282,14 @@ export default function ProfileView() {
                                         value={passwordForm.currentPassword}
                                         onChange={(e) => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
                                     />
-                                    
+
                                     <Input
                                         type="password"
                                         label="New Password"
                                         value={passwordForm.newPassword}
                                         onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
                                     />
-                                    
+
                                     <Input
                                         type="password"
                                         label="Confirm New Password"
@@ -299,7 +299,7 @@ export default function ProfileView() {
                                 </div>
 
                                 <div className="flex gap-3 justify-end mt-6">
-                                    <Button 
+                                    <Button
                                         onClick={() => {
                                             setIsChangingPassword(false);
                                             setPasswordForm({
@@ -313,7 +313,7 @@ export default function ProfileView() {
                                     >
                                         Cancel
                                     </Button>
-                                    <Button 
+                                    <Button
                                         onClick={handleChangePassword}
                                         loading={isLoading}
                                     >

@@ -3,8 +3,9 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from '@reduxjs/toolkit';
 
-import authReducer from './slices/authSlice';
+import authReducer, { setCredentials } from './slices/authSlice';
 import userReducer from './slices/userSlice';
+import { initializeStorage } from '../utils/storage';
 
 const persistConfig = {
   key: 'root',
@@ -28,6 +29,20 @@ export const store = configureStore({
       },
     }),
 });
+
+// Initialize storage and restore user session
+const initializeApp = () => {
+  const storedAuth = initializeStorage();
+  if (storedAuth && storedAuth.user && storedAuth.token) {
+    store.dispatch(setCredentials({
+      user: storedAuth.user,
+      token: storedAuth.token
+    }));
+  }
+};
+
+// Initialize app after store is created
+initializeApp();
 
 export const persistor = persistStore(store);
 

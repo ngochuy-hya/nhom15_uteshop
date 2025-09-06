@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import sequelize from "./config/database";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
+import productRoutes from "./routes/productRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 
 // Load env
@@ -77,6 +79,8 @@ app.get("/api/health", (_req: Request, res: Response) => {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Error handling
 app.use(notFoundHandler);

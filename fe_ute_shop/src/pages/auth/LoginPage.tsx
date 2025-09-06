@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../components/UI/Button";
-import { Input } from "../components/UI/Input";
-import { useAppDispatch, useAppState } from "../store/hooks";
-import { loginAsync, clearError } from "../store/slices/authSlice";
+import { Button } from "../../components/UI/Button.tsx";
+import { Input } from "../../components/UI/Input.tsx";
+import { useAppDispatch, useAppState } from "../../store/hooks.ts";
+import { loginAsync, clearError } from "../../store/slices/authSlice.ts";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -17,7 +17,7 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            nav("/profile");
+            nav("/");
         }
     }, [isAuthenticated, nav]);
 
@@ -35,7 +35,7 @@ export default function LoginPage() {
         const resultAction = await dispatch(loginAsync({ email, password, remember }));
         
         if (loginAsync.fulfilled.match(resultAction)) {
-            nav("/profile");
+            nav("/");
         }
     };
 
