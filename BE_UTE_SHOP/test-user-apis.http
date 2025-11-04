@@ -1,0 +1,832 @@
+### ============================================
+### 👤 USER APIs TEST - ĐẦY ĐỦ
+### ============================================
+### 
+### Hướng dẫn sử dụng:
+### 1. Thay {{userToken}} bằng token của bạn (lấy từ login)
+### 2. Thay {{adminToken}} bằng token của admin
+### 3. Thay {{userId}} bằng ID user thực tế
+### 4. Thay {{email}} và {{otp}} khi test OTP
+###
+### ============================================
+
+### Variables
+@baseUrl = http://localhost:5000/api
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImVtYWlsIjoibmd1eWVuaHV5cG0xQGdtYWlsLmNvbSIsInJvbGVJZCI6MSwiaWF0IjoxNzYxOTY5NDAzLCJleHAiOjE3NjI1NzQyMDN9.AkmseFTAzsuT3bvOsMPn_XSzt1HAxvIHgtxLo9-QC-4
+@adminToken = YOUR_ADMIN_TOKEN_HERE
+@userId = 1
+@email = user@example.com
+@otp = 123456
+
+### ============================================
+### 🔐 AUTH APIs - ĐĂNG KÝ, ĐĂNG NHẬP, OTP
+### ============================================
+
+### 1. ĐĂNG KÝ TÀI KHOẢN
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Ngọc Huy",
+  "email": "nguyenhuypm1@gmail.com",
+  "password": "123456",
+  "confirmPassword": "123456",
+  "phone": "0327793283",
+  "dateOfBirth": "2004-11-16",
+  "gender": "male"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+###   "data": {
+###     "user_id": 1,
+###     "email": "nguyenhuypm1@gmail.com",
+###     "email_sent": true
+###   }
+### }
+###
+### ❌ Lỗi nếu:
+### - Email đã tồn tại: 400
+### - Password quá ngắn (< 6): 400
+### - Email không hợp lệ: 400
+### - Thiếu thông tin bắt buộc: 400
+###
+
+### ============================================
+### 2. XÁC THỰC OTP (Sau khi đăng ký)
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "nguyenhuypm1@gmail.com",
+  "otp": "348733"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Xác thực email thành công!",
+###   "data": {
+###     "user": {
+###       "id": 1,
+###       "email": "user@example.com",
+###       "first_name": "Ngọc Huy",
+###       "last_name": "Nguyễn",
+###       "email_verified": true
+###     },
+###     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+###   }
+### }
+###
+### → Lưu token từ response để dùng cho các API khác
+###
+### ❌ Lỗi nếu:
+### - OTP sai: 400
+### - OTP hết hạn: 400
+### - OTP đã được sử dụng: 400
+###
+
+### ============================================
+### 3. GỬI LẠI OTP
+POST {{baseUrl}}/auth/resend-otp
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đã gửi lại mã OTP. Vui lòng kiểm tra email.",
+###   "data": {
+###     "email_sent": true
+###   }
+### }
+###
+
+### ============================================
+### 4. ĐĂNG NHẬP
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "nguyenhuypm1@gmail.com",
+  "password": "123456"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đăng nhập thành công",
+###   "data": {
+###     "user": {
+###       "id": 1,
+###       "email": "user@example.com",
+###       "first_name": "Ngọc Huy",
+###       "last_name": "Nguyễn",
+###       "role_id": 1
+###     },
+###     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+###   }
+### }
+###
+### → Lưu token vào {{userToken}}
+###
+### ❌ Lỗi nếu:
+### - Email/sai mật khẩu: 401
+### - User không tồn tại: 401
+### - User bị vô hiệu hóa: 403
+###
+
+### ============================================
+### 5. QUÊN MẬT KHẨU
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "{{email}}"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra hộp thư.",
+###   "data": {
+###     "email_sent": true
+###   }
+### }
+###
+### → Kiểm tra email để lấy reset token
+###
+
+### ============================================
+### 6. ĐẶT LẠI MẬT KHẨU (Sau khi quên mật khẩu)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "RESET_TOKEN_FROM_EMAIL",
+  "password": "newpassword123",
+  "confirmPassword": "newpassword123"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đặt lại mật khẩu thành công"
+### }
+###
+### ❌ Lỗi nếu:
+### - Token không hợp lệ/hết hạn: 400
+### - Mật khẩu mới quá ngắn: 400
+### - Mật khẩu không khớp: 400
+###
+
+### ============================================
+### 7. XEM PROFILE (Sau khi đăng nhập)
+GET {{baseUrl}}/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy thông tin profile thành công",
+###   "data": {
+###     "id": 1,
+###     "email": "user@example.com",
+###     "first_name": "Ngọc Huy",
+###     "last_name": "Nguyễn",
+###     "phone": "0327793283",
+###     "date_of_birth": "2004-11-16",
+###     "gender": "male",
+###     "avatar": "/uploads/avatars/user1.jpg",
+###     "role_id": 1,
+###     "email_verified": true
+###   }
+### }
+###
+
+### ============================================
+### 8. ĐĂNG XUẤT
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đăng xuất thành công"
+### }
+###
+
+### ============================================
+### 9. REFRESH TOKEN (Nếu có)
+POST {{baseUrl}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "REFRESH_TOKEN_HERE"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Refresh token thành công",
+###   "data": {
+###     "token": "NEW_TOKEN_HERE",
+###     "refreshToken": "NEW_REFRESH_TOKEN_HERE"
+###   }
+### }
+###
+
+### ============================================
+### 👤 USER APIs (Cần đăng nhập)
+### ============================================
+
+### 1. Cập nhật profile của chính mình
+PUT {{baseUrl}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "first_name": "Ngọc",
+  "last_name": "Huy",
+  "phone": "0327793283",
+  "date_of_birth": "2004-11-16",
+  "gender": "male",
+  "avatar": "/uploads/avatars/user1.jpg"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Cập nhật thông tin thành công",
+###   "data": {
+###     "id": 1,
+###     "email": "user@example.com",
+###     "first_name": "Ngọc",
+###     "last_name": "Huy",
+###     "phone": "0327793283",
+###     "updated_at": "2024-11-01T10:30:00Z"
+###   }
+### }
+###
+
+### ============================================
+### 2. Đổi mật khẩu
+POST {{baseUrl}}/users/change-password
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "current_password": "123456",
+  "new_password": "newpassword123",
+  "confirm_password": "newpassword123"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Đổi mật khẩu thành công"
+### }
+###
+### ❌ Lỗi nếu:
+### - Mật khẩu hiện tại sai: 400
+### - Mật khẩu mới không khớp: 400
+### - Mật khẩu mới quá ngắn: 400
+###
+
+### ============================================
+### 🔐 ADMIN APIs (Cần quyền admin)
+### ============================================
+
+### 3. Lấy danh sách tất cả users (Admin)
+GET {{baseUrl}}/users?page=1&limit=20&search=nguyen&role_id=1&is_active=1
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### Query Parameters:
+### - page: Số trang (default: 1)
+### - limit: Số lượng/trang (default: 20)
+### - search: Tìm theo email, first_name, last_name
+### - role_id: Lọc theo role (1 = user, 2 = admin)
+### - is_active: Lọc theo trạng thái (1 = active, 0 = inactive)
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy danh sách users thành công",
+###   "data": {
+###     "users": [
+###       {
+###         "id": 1,
+###         "email": "user@example.com",
+###         "first_name": "Ngọc",
+###         "last_name": "Huy",
+###         "role_id": 1,
+###         "is_active": 1,
+###         "email_verified": 1,
+###         "created_at": "2024-11-01T10:30:00Z"
+###       }
+###     ],
+###     "pagination": {
+###       "current_page": 1,
+###       "per_page": 20,
+###       "total": 100,
+###       "total_pages": 5
+###     }
+###   }
+### }
+###
+
+### ============================================
+### 4. Lấy thống kê users (Admin)
+GET {{baseUrl}}/users/statistics
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy thống kê users thành công",
+###   "data": {
+###     "total_users": 120,
+###     "active_users": 110,
+###     "new_users_today": 5,
+###     "new_users_this_month": 20
+###   }
+### }
+###
+
+### ============================================
+### 5. Lấy thông tin user theo ID (Admin)
+GET {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy thông tin user thành công",
+###   "data": {
+###     "id": 1,
+###     "email": "user@example.com",
+###     "first_name": "Ngọc",
+###     "last_name": "Huy",
+###     "phone": "0327793283",
+###     "date_of_birth": "2004-11-16",
+###     "gender": "male",
+###     "avatar": "/uploads/avatars/user1.jpg",
+###     "role_id": 1,
+###     "is_active": 1,
+###     "email_verified": 1,
+###     "created_at": "2024-11-01T10:30:00Z",
+###     "updated_at": "2024-11-01T10:30:00Z"
+###   }
+### }
+###
+
+### ============================================
+### 6. Cập nhật user (Admin)
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "first_name": "Ngọc",
+  "last_name": "Huy",
+  "phone": "0327793283",
+  "date_of_birth": "2004-11-16",
+  "gender": "male",
+  "role_id": 1,
+  "is_active": 1
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Cập nhật user thành công"
+### }
+###
+
+### ============================================
+### 7. Lấy đơn hàng của user (Admin)
+GET {{baseUrl}}/users/{{userId}}/orders?page=1&limit=10&status_id=1
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### Query Parameters:
+### - page: Số trang (default: 1)
+### - limit: Số lượng/trang (default: 10)
+### - status_id: Lọc theo trạng thái đơn hàng (optional)
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy đơn hàng của user thành công",
+###   "data": {
+###     "orders": [
+###       {
+###         "id": 1,
+###         "order_number": "UTE-2024-000001",
+###         "total_amount": 600000,
+###         "status_id": 1,
+###         "status_name": "pending",
+###         "created_at": "2024-11-01T10:30:00Z"
+###       }
+###     ],
+###     "pagination": {
+###       "current_page": 1,
+###       "per_page": 10,
+###       "total": 25,
+###       "total_pages": 3
+###     }
+###   }
+### }
+###
+
+### ============================================
+### 8. Kích hoạt user (Admin)
+PUT {{baseUrl}}/users/{{userId}}/activate
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Kích hoạt user thành công"
+### }
+###
+
+### ============================================
+### 9. Vô hiệu hóa user (Admin)
+PUT {{baseUrl}}/users/{{userId}}/deactivate
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Vô hiệu hóa user thành công"
+### }
+###
+
+### ============================================
+### 10. Xóa user (Admin - Soft delete)
+DELETE {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Xóa user thành công"
+### }
+###
+### Lưu ý: Đây là soft delete, user sẽ được đánh dấu deleted = 1
+###
+
+### ============================================
+### 🔄 COMPLETE FLOW TEST - LUỒNG HOÀN CHỈNH
+### ============================================
+
+### Bước 1: Đăng ký tài khoản mới
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Ngọc Huy",
+  "email": "newuser@example.com",
+  "password": "123456",
+  "confirmPassword": "123456",
+  "phone": "0327793283",
+  "dateOfBirth": "2004-11-16",
+  "gender": "male"
+}
+
+### → Lưu email và chờ OTP từ email
+
+###
+### Bước 2: Xác thực OTP
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "otp": "123456"
+}
+
+### → Lưu token vào {{userToken}}
+
+###
+### Bước 3: Đăng nhập (hoặc dùng token từ verify OTP)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "password": "123456"
+}
+
+### → Lưu token vào {{userToken}}
+
+###
+### Bước 4: User xem profile của chính mình
+GET {{baseUrl}}/auth/profile
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### → Xem thông tin hiện tại
+
+###
+### Bước 5: User cập nhật profile
+PUT {{baseUrl}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "first_name": "Ngọc",
+  "last_name": "Huy",
+  "phone": "0327793283"
+}
+
+### → Cập nhật thành công
+
+###
+### Bước 6: User đổi mật khẩu
+POST {{baseUrl}}/users/change-password
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "current_password": "123456",
+  "new_password": "newpassword123",
+  "confirm_password": "newpassword123"
+}
+
+### → Đổi mật khẩu thành công
+
+###
+### Bước 7: Test quên mật khẩu
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com"
+}
+
+### → Kiểm tra email để lấy reset token
+
+###
+### Bước 8: Đặt lại mật khẩu
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "RESET_TOKEN_FROM_EMAIL",
+  "password": "resetpassword123",
+  "confirmPassword": "resetpassword123"
+}
+
+### → Đặt lại mật khẩu thành công
+
+###
+### Bước 9: Đăng nhập lại với mật khẩu mới
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "newuser@example.com",
+  "password": "resetpassword123"
+}
+
+### → Lưu token mới
+
+###
+### Bước 10: Admin xem danh sách users
+GET {{baseUrl}}/users?page=1&limit=20
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Xem danh sách tất cả users
+
+###
+### Bước 11: Admin xem thống kê
+GET {{baseUrl}}/users/statistics
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Xem thống kê users
+
+###
+### Bước 12: Admin xem chi tiết user
+GET {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Xem chi tiết user
+
+###
+### Bước 13: Admin xem đơn hàng của user
+GET {{baseUrl}}/users/{{userId}}/orders
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Xem đơn hàng của user
+
+###
+### Bước 14: Admin cập nhật user
+PUT {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "first_name": "Updated",
+  "last_name": "Name",
+  "role_id": 1,
+  "is_active": 1
+}
+
+### → Cập nhật user thành công
+
+###
+
+### ============================================
+### ❌ ERROR SCENARIOS - TEST CÁC TRƯỜNG HỢP LỖI
+### ============================================
+
+### Test 1: Cập nhật profile không có token
+PUT {{baseUrl}}/users/profile
+Content-Type: application/json
+
+{
+  "first_name": "Test"
+}
+
+### → Expected: 401 Unauthorized
+
+###
+### Test 2: Đổi mật khẩu với mật khẩu hiện tại sai
+POST {{baseUrl}}/users/change-password
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "current_password": "wrongpassword",
+  "new_password": "newpassword123",
+  "confirm_password": "newpassword123"
+}
+
+### → Expected: 400 Bad Request - "Mật khẩu hiện tại không chính xác"
+
+###
+### Test 3: Đổi mật khẩu với mật khẩu mới không khớp
+POST {{baseUrl}}/users/change-password
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "current_password": "123456",
+  "new_password": "newpassword123",
+  "confirm_password": "differentpassword"
+}
+
+### → Expected: 400 Bad Request - "Mật khẩu mới không khớp"
+
+###
+### Test 4: Admin xem users không có token
+GET {{baseUrl}}/users?page=1&limit=20
+Content-Type: application/json
+
+### → Expected: 401 Unauthorized
+
+###
+### Test 5: User thường cố gắng xem danh sách users (không có quyền admin)
+GET {{baseUrl}}/users?page=1&limit=20
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### → Expected: 403 Forbidden - "Admin access required"
+
+###
+### Test 6: Admin xem user không tồn tại
+GET {{baseUrl}}/users/99999
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Expected: 404 Not Found
+
+###
+### Test 7: Cập nhật profile với dữ liệu không hợp lệ
+PUT {{baseUrl}}/users/profile
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "phone": "123"
+}
+
+### → Expected: 400 Bad Request - Validation errors
+
+###
+### Test 8: Đổi mật khẩu với mật khẩu mới quá ngắn
+POST {{baseUrl}}/users/change-password
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "current_password": "123456",
+  "new_password": "123",
+  "confirm_password": "123"
+}
+
+### → Expected: 400 Bad Request - "Mật khẩu phải có ít nhất 6 ký tự"
+
+###
+### Test 9: Đăng ký với email đã tồn tại
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "existing@example.com",
+  "password": "123456",
+  "confirmPassword": "123456"
+}
+
+### → Expected: 400 Bad Request - "Email đã được sử dụng"
+
+###
+### Test 10: Xác thực OTP sai
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "otp": "999999"
+}
+
+### → Expected: 400 Bad Request - "Mã OTP không chính xác"
+
+###
+### Test 11: Đăng nhập với mật khẩu sai
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "wrongpassword"
+}
+
+### → Expected: 401 Unauthorized - "Email hoặc mật khẩu không chính xác"
+
+###
+### Test 12: Quên mật khẩu với email không tồn tại
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com"
+}
+
+### → Expected: 404 Not Found hoặc 400 - "Email không tồn tại"
+
+###
+### Test 13: Reset password với token không hợp lệ
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "invalid_token",
+  "password": "newpassword123",
+  "confirmPassword": "newpassword123"
+}
+
+### → Expected: 400 Bad Request - "Token không hợp lệ hoặc đã hết hạn"
+
+###
+
+

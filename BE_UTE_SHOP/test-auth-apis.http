@@ -1,0 +1,276 @@
+### ============================================
+### 🔐 AUTH APIs TESTING
+### ============================================
+
+@baseUrl = http://localhost:5000/api
+@token = 
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdXRlc2hvcC5jb20iLCJyb2xlSWQiOjIsImlhdCI6MTc2MTk3MjYyMiwiZXhwIjoxNzYyNTc3NDIyfQ.BaWPLaD3RLXbnPW51S3bXHfq_hQtmA9uaFZT1ANh1Q4
+
+### ============================================
+### 1. REGISTER API
+### ============================================
+
+### Test Register - Success Case
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Ngọc Huy",
+  "email": "nguyenhuypm1@gmail.com",
+  "password": "123456",
+  "confirmPassword": "123456",
+  "phone": "0327793283",
+  "dateOfBirth": "2004-11-16",
+  "gender": "male"
+}
+
+### Test Register - Invalid Email
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "invalid-email",
+  "password": "Password123",
+  "confirmPassword": "Password123"
+}
+
+### Test Register - Password Mismatch
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "Password123",
+  "confirmPassword": "DifferentPassword"
+}
+
+### Test Register - Weak Password
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test2@example.com",
+  "password": "123",
+  "confirmPassword": "123"
+}
+
+### ============================================
+### 2. LOGIN API
+### ============================================
+
+### Test Login - Success Case
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@uteshop.com",
+  "password": "123456"
+}
+
+### Test Login - Wrong Password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "WrongPassword"
+}
+
+### Test Login - Non-existent User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com",
+  "password": "Password123"
+}
+
+### ============================================
+### 3. PROFILE API
+### ============================================
+
+### Get Profile (Need Token)
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{token}}
+
+### Update Profile (Need Token)
+PUT {{baseUrl}}/auth/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Văn A Updated",
+  "phone": "0987654321",
+  "dateOfBirth": "1990-01-01",
+  "gender": "male"
+}
+
+### ============================================
+### 4. CHANGE PASSWORD API
+### ============================================
+
+### Change Password (Need Token)
+POST {{baseUrl}}/auth/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "currentPassword": "Password123",
+  "newPassword": "NewPassword123",
+  "confirmPassword": "NewPassword123"
+}
+
+### ============================================
+### 5. FORGOT PASSWORD API
+### ============================================
+
+### Forgot Password
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com"
+}
+
+### Forgot Password - Non-existent Email
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "nonexistent@example.com"
+}
+
+### ============================================
+### 6. RESET PASSWORD API
+### ============================================
+
+### Reset Password (Need Token from Email)
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "RESET_TOKEN_FROM_EMAIL",
+  "password": "NewPassword123",
+  "confirmPassword": "NewPassword123"
+}
+
+### ============================================
+### 7. OTP APIs
+### ============================================
+
+### Verify OTP
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "otp": "123456"
+}
+
+### Resend OTP
+POST {{baseUrl}}/auth/resend-otp
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com"
+}
+
+### ============================================
+### 8. REFRESH TOKEN API
+### ============================================
+
+### Refresh Token
+POST {{baseUrl}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "REFRESH_TOKEN_HERE"
+}
+
+### ============================================
+### 9. SOCIAL LOGIN APIs
+### ============================================
+
+### Google Login
+POST {{baseUrl}}/auth/google
+Content-Type: application/json
+
+{
+  "token": "GOOGLE_ID_TOKEN_HERE"
+}
+
+### Facebook Login
+POST {{baseUrl}}/auth/facebook
+Content-Type: application/json
+
+{
+  "token": "FACEBOOK_ACCESS_TOKEN_HERE"
+}
+
+### ============================================
+### 10. LOGOUT API
+### ============================================
+
+### Logout (Need Token)
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+### ============================================
+### 11. AVATAR APIs
+### ============================================
+
+### Upload Avatar (Need Token)
+POST {{baseUrl}}/auth/profile/avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data
+
+### Delete Avatar (Need Token)
+DELETE {{baseUrl}}/auth/profile/avatar
+Authorization: Bearer {{token}}
+
+### ============================================
+### 🧪 TESTING WORKFLOW
+### ============================================
+
+### Step 1: Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "password": "Password123",
+  "confirmPassword": "Password123",
+  "phone": "0123456789"
+}
+
+### Step 2: Login with the registered user
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Password123"
+}
+
+### Step 3: Copy the token from login response and use it in subsequent requests
+### Step 4: Get profile
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Step 5: Update profile
+PUT {{baseUrl}}/auth/profile
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "name": "Updated Name",
+  "phone": "0987654321"
+}
+
+### Step 6: Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer YOUR_TOKEN_HERE

@@ -1,0 +1,48 @@
+import Footer1 from "@/components/footers/Footer1";
+import Header1 from "@/components/headers/Header1";
+import Breadcumb from "@/components/productDetails/Breadcumb";
+import Description1 from "@/components/productDetails/Description1";
+import Details1 from "@/components/productDetails/Details1";
+import ProductSidebar from "@/components/productDetails/ProductSidebar";
+import RecentlyViewedProducts from "@/components/productDetails/RecentlyViewedProducts";
+import RecommendedProdtcts from "@/components/productDetails/RecommendedProdtcts";
+import { allProducts } from "@/data/products";
+import React from "react";
+import { useParams } from "react-router-dom";
+import MetaComponent from "@/components/common/MetaComponent";
+const metadata = {
+  title: "Product Details || Vineta - Multipurpose Reactjs eCommerce Template",
+  description: "Vineta - Multipurpose Reactjs eCommerce Template",
+};
+export default function ProductDetailPageDrawerSidebar() {
+  let params = useParams();
+  const id = Number(params.id);
+
+  const product = allProducts.filter((p) => p.id == id)[0] || allProducts[0];
+  return (
+    <>
+      <MetaComponent meta={metadata} />
+      <Header1 />
+      <div className="btn-sidebar left d-flex">
+        <button
+          className="type-hover"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#sidebarSingle"
+          aria-controls="sidebarSingle"
+        >
+          <i className="icon icon-sidebar" />
+          <span className="text">Open sidebar</span>
+        </button>
+      </div>
+
+      <Breadcumb product={product} />
+      <Details1 product={product} />
+      <Description1 />
+      <RecommendedProdtcts />
+      <RecentlyViewedProducts />
+      <Footer1 paddingBottom />
+      <ProductSidebar />
+    </>
+  );
+}
+

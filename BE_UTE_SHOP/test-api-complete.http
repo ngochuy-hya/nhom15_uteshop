@@ -1,0 +1,873 @@
+### ============================================
+### UTESHOP API Testing - COMPLETE (117 APIs)
+### ============================================
+
+@baseUrl = http://localhost:5000/api
+@token = YOUR_USER_TOKEN_HERE
+@adminToken = YOUR_ADMIN_TOKEN_HERE
+@googleIdToken = YOUR_GOOGLE_ID_TOKEN_HERE
+@facebookAccessToken = YOUR_FACEBOOK_ACCESS_TOKEN_HERE
+
+### ============================================
+### 🔐 AUTHENTICATION APIs (15 APIs)
+### ============================================
+
+### 1. Đăng ký tài khoản
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Mai Anh Khôi",
+  "email": "maianhkhoi04@gmail.com",
+  "password": "123456",
+  "confirmPassword": "123456",
+  "phone": "0327793284",
+  "dateOfBirth": "2004-11-16",
+  "gender": "male"
+}
+
+### 2. Xác thực OTP
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "nguyenhuypm1@gmail.com",
+  "otp": "444222"
+}
+
+### 3. Gửi lại OTP
+POST {{baseUrl}}/auth/resend-otp
+Content-Type: application/json
+
+{
+  "email": "nguyenngochuypm1@gmail.com"
+}
+
+### 4. Đăng nhập
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@uteshop.com",
+  "password": "123456"
+}
+
+### 5. Lấy profile
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{token}}
+
+### 6. Đăng xuất
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+### 7. Quên mật khẩu
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com"
+}
+
+### 8. Đặt lại mật khẩu
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "otp": "123456",
+  "new_password": "newpassword123"
+}
+
+### 9. Refresh token
+POST {{baseUrl}}/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refresh_token": "YOUR_REFRESH_TOKEN"
+}
+
+### 10. Đăng nhập Google (ID Token)
+POST {{baseUrl}}/auth/google
+Content-Type: application/json
+
+{
+  "idToken": "{{googleIdToken}}"
+}
+
+### 11. Đăng nhập Google (Redirect) - Open in browser
+# GET http://localhost:5000/api/auth/google/login
+
+### 12. Google Callback (Auto called by Google)
+# GET {{baseUrl}}/auth/google/callback?code=xxx
+
+### 13. Đăng nhập Facebook (Access Token)
+POST {{baseUrl}}/auth/facebook
+Content-Type: application/json
+
+{
+  "accessToken": "{{facebookAccessToken}}"
+}
+
+### 14. Đăng nhập Facebook (Redirect) - Open in browser
+# GET http://localhost:5000/api/auth/facebook/login
+
+### 15. Facebook Callback (Auto called by Facebook)
+# GET {{baseUrl}}/auth/facebook/callback?code=xxx
+
+### ============================================
+### 👤 USER APIs (10 APIs)
+### ============================================
+
+### 1. Lấy danh sách users (Admin)
+GET {{baseUrl}}/users?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 2. Thống kê users (Admin)
+GET {{baseUrl}}/users/statistics
+Authorization: Bearer {{adminToken}}
+
+### 3. Lấy user theo ID (Admin)
+GET {{baseUrl}}/users/1
+Authorization: Bearer {{adminToken}}
+
+### 4. Cập nhật profile (User)
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "first_name": "John Updated",
+  "last_name": "Doe",
+  "phone": "0123456789"
+}
+
+### 5. Cập nhật user (Admin)
+PUT {{baseUrl}}/users/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "first_name": "Updated",
+  "last_name": "Name",
+  "email": "newemail@example.com",
+  "role_id": 1,
+  "is_active": 1
+}
+
+### 6. Đổi mật khẩu
+POST {{baseUrl}}/users/change-password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "old_password": "password123",
+  "new_password": "newpassword456"
+}
+
+### 7. Xóa user (Admin)
+DELETE {{baseUrl}}/users/1
+Authorization: Bearer {{adminToken}}
+
+### 8. Lấy đơn hàng của user (Admin)
+GET {{baseUrl}}/users/1/orders?page=1&limit=10
+Authorization: Bearer {{adminToken}}
+
+### 9. Kích hoạt user (Admin)
+PUT {{baseUrl}}/users/1/activate
+Authorization: Bearer {{adminToken}}
+
+### 10. Vô hiệu hóa user (Admin)
+PUT {{baseUrl}}/users/1/deactivate
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 🛍️ PRODUCT APIs (16 APIs)
+### ============================================
+
+### 1. Lấy danh sách sản phẩm
+GET {{baseUrl}}/products?page=1&limit=12&sort_by=price&sort_order=ASC
+
+### 2. Lấy sản phẩm nổi bật
+GET {{baseUrl}}/products/featured?limit=8
+
+### 3. Lấy sản phẩm bán chạy
+GET {{baseUrl}}/products/bestseller?limit=8
+
+### 4. Lấy sản phẩm giảm giá tốt
+GET {{baseUrl}}/products/bestdeal?limit=8
+
+### 5. Lấy sản phẩm theo category
+GET {{baseUrl}}/products/category/1?page=1&limit=12
+
+### 6. Lấy sản phẩm theo brand
+GET {{baseUrl}}/products/brand/1?page=1&limit=12
+
+### 7. Lấy chi tiết sản phẩm
+GET {{baseUrl}}/products/1
+
+### 8. Lấy sản phẩm liên quan
+GET {{baseUrl}}/products/1/related?limit=4
+
+### 9. Tạo sản phẩm (Admin)
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo thun nam basic",
+  "description": "Áo thun nam chất liệu cotton",
+  "price": 199000,
+  "sale_price": 149000,
+  "stock_quantity": 100,
+  "category_id": 1,
+  "brand_id": 1,
+  "sku": "AT001"
+}
+
+### 10. Cập nhật sản phẩm (Admin)
+PUT {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo thun nam basic updated",
+  "price": 249000
+}
+
+### 11. Xóa sản phẩm (Admin)
+DELETE {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+
+### 12. Upload ảnh sản phẩm (Admin)
+POST {{baseUrl}}/products/1/images
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "images": [
+    {
+      "image_url": "/uploads/product-1.jpg",
+      "is_primary": 1,
+      "sort_order": 0
+    }
+  ]
+}
+
+### 13. Xóa ảnh sản phẩm (Admin)
+DELETE {{baseUrl}}/products/1/images/1
+Authorization: Bearer {{adminToken}}
+
+### 14. Thêm thuộc tính sản phẩm (Admin)
+POST {{baseUrl}}/products/1/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Kích thước",
+  "attribute_value": "M, L, XL"
+}
+
+### 15. Cập nhật thuộc tính (Admin)
+PUT {{baseUrl}}/products/1/attributes/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_value": "S, M, L, XL, XXL"
+}
+
+### 16. Xóa thuộc tính (Admin)
+DELETE {{baseUrl}}/products/1/attributes/1
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 📂 CATEGORY APIs (6 APIs)
+### ============================================
+
+### 1. Lấy danh sách categories
+GET {{baseUrl}}/categories
+
+### 2. Lấy category theo ID
+GET {{baseUrl}}/categories/1
+
+### 3. Lấy category theo slug
+GET {{baseUrl}}/categories/slug/ao-nam
+
+### 4. Tạo category (Admin)
+POST {{baseUrl}}/categories
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo nam",
+  "slug": "ao-nam",
+  "description": "Danh mục áo nam"
+}
+
+### 5. Cập nhật category (Admin)
+PUT {{baseUrl}}/categories/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo nam updated",
+  "is_active": 1
+}
+
+### 6. Xóa category (Admin)
+DELETE {{baseUrl}}/categories/1
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 🏷️ BRAND APIs (6 APIs)
+### ============================================
+
+### 1. Lấy danh sách brands
+GET {{baseUrl}}/brands?limit=20
+
+### 2. Lấy brand theo ID
+GET {{baseUrl}}/brands/1
+
+### 3. Lấy brand theo slug
+GET {{baseUrl}}/brands/slug/nike
+
+### 4. Tạo brand (Admin)
+POST {{baseUrl}}/brands
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Nike",
+  "slug": "nike",
+  "description": "Thương hiệu Nike"
+}
+
+### 5. Cập nhật brand (Admin)
+PUT {{baseUrl}}/brands/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Nike Updated",
+  "is_active": 1
+}
+
+### 6. Xóa brand (Admin)
+DELETE {{baseUrl}}/brands/1
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 🛒 CART APIs (5 APIs)
+### ============================================
+
+### 1. Lấy giỏ hàng
+GET {{baseUrl}}/cart
+Authorization: Bearer {{token}}
+
+### 2. Thêm vào giỏ hàng
+POST {{baseUrl}}/cart
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "product_id": 1,
+  "quantity": 2
+}
+
+### 3. Cập nhật số lượng
+PUT {{baseUrl}}/cart/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "quantity": 3
+}
+
+### 4. Xóa khỏi giỏ hàng
+DELETE {{baseUrl}}/cart/1
+Authorization: Bearer {{token}}
+
+### 5. Xóa toàn bộ giỏ hàng
+DELETE {{baseUrl}}/cart
+Authorization: Bearer {{token}}
+
+### ============================================
+### ❤️ WISHLIST APIs (5 APIs)
+### ============================================
+
+### 1. Lấy wishlist
+GET {{baseUrl}}/wishlist
+Authorization: Bearer {{token}}
+
+### 2. Thêm vào wishlist
+POST {{baseUrl}}/wishlist
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "product_id": 1
+}
+
+### 3. Kiểm tra sản phẩm trong wishlist
+GET {{baseUrl}}/wishlist/check/1
+Authorization: Bearer {{token}}
+
+### 4. Xóa khỏi wishlist
+DELETE {{baseUrl}}/wishlist/1
+Authorization: Bearer {{token}}
+
+### 5. Xóa toàn bộ wishlist
+DELETE {{baseUrl}}/wishlist
+Authorization: Bearer {{token}}
+
+### ============================================
+### 📦 ORDER APIs (9 APIs)
+### ============================================
+
+### 1. Tạo đơn hàng
+POST {{baseUrl}}/orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "shipping_address_id": 1,
+  "payment_method": "cod",
+  "coupon_code": "SALE10",
+  "note": "Giao hàng giờ hành chính"
+}
+
+### 2. Lấy đơn hàng của tôi
+GET {{baseUrl}}/orders/my-orders?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### 3. Lấy chi tiết đơn hàng
+GET {{baseUrl}}/orders/1
+Authorization: Bearer {{token}}
+
+### 4. Hủy đơn hàng
+POST {{baseUrl}}/orders/1/cancel
+Authorization: Bearer {{token}}
+
+### 5. Lấy tất cả đơn hàng (Admin)
+GET {{baseUrl}}/orders/admin/all?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 6. Cập nhật trạng thái đơn hàng (Admin)
+PUT {{baseUrl}}/orders/admin/1/status
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status_id": 2
+}
+
+### 7. Thống kê đơn hàng (Admin)
+GET {{baseUrl}}/orders/admin/statistics?start_date=2024-01-01&end_date=2024-12-31
+Authorization: Bearer {{adminToken}}
+
+### 8. Lấy hóa đơn
+GET {{baseUrl}}/orders/1/invoice
+Authorization: Bearer {{token}}
+
+### 9. Yêu cầu trả hàng
+POST {{baseUrl}}/orders/1/return
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Sản phẩm không đúng mô tả",
+  "items": [{"product_id": 1, "quantity": 1}]
+}
+
+### ============================================
+### ⭐ REVIEW APIs (8 APIs)
+### ============================================
+
+### 1. Lấy đánh giá sản phẩm
+GET {{baseUrl}}/reviews/product/1?page=1&limit=10
+
+### 2. Tạo đánh giá
+POST {{baseUrl}}/reviews
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "product_id": 1,
+  "order_id": 1,
+  "rating": 5,
+  "comment": "Sản phẩm rất tốt!",
+  "images": ["/uploads/review-1.jpg"]
+}
+
+### 3. Cập nhật đánh giá
+PUT {{baseUrl}}/reviews/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "rating": 4,
+  "comment": "Sản phẩm tốt"
+}
+
+### 4. Xóa đánh giá
+DELETE {{baseUrl}}/reviews/1
+Authorization: Bearer {{token}}
+
+### 5. Lấy đánh giá của tôi
+GET {{baseUrl}}/reviews/my-reviews?page=1&limit=10
+Authorization: Bearer {{token}}
+
+### 6. Lấy tất cả đánh giá (Admin)
+GET {{baseUrl}}/reviews/admin/all?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 7. Duyệt đánh giá (Admin)
+PUT {{baseUrl}}/reviews/admin/1/approve
+Authorization: Bearer {{adminToken}}
+
+### 8. Từ chối đánh giá (Admin)
+PUT {{baseUrl}}/reviews/admin/1/reject
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 🎟️ COUPON APIs (6 APIs)
+### ============================================
+
+### 1. Lấy danh sách coupons
+GET {{baseUrl}}/coupons
+
+### 2. Kiểm tra coupon
+POST {{baseUrl}}/coupons/check
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "code": "SALE10",
+  "order_total": 500000
+}
+
+### 3. Áp dụng coupon
+POST {{baseUrl}}/coupons/apply
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "code": "SALE10"
+}
+
+### 4. Tạo coupon (Admin)
+POST {{baseUrl}}/coupons
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "code": "SALE10",
+  "name": "Upseo",
+  "discount_type": "percentage",
+  "discount_value": 10,
+  "min_order_value": 100000,
+  "max_discount": 50000,
+  "usage_limit": 100,
+  "start_date": "2024-01-01",
+  "end_date": "2024-12-31"
+}
+
+### 5. Cập nhật coupon (Admin)
+PUT {{baseUrl}}/coupons/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "is_active": 1,
+  "usage_limit": 200
+}
+
+### 6. Xóa coupon (Admin)
+DELETE {{baseUrl}}/coupons/1
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 📍 ADDRESS APIs (5 APIs)
+### ============================================
+
+### 1. Lấy danh sách địa chỉ
+GET {{baseUrl}}/addresses
+Authorization: Bearer {{token}}
+
+### 2. Tạo địa chỉ mới
+POST {{baseUrl}}/addresses
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "full_name": "Nguyễn Văn A",
+  "phone": "0123456789",
+  "address_line1": "123 Đường ABC",
+  "ward": "Phường 1",
+  "district": "Quận 1",
+  "city": "TP.HCM",
+  "is_default": 1
+}
+
+### 3. Cập nhật địa chỉ
+PUT {{baseUrl}}/addresses/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "full_name": "Nguyễn Văn B",
+  "is_default": 1
+}
+
+### 4. Xóa địa chỉ
+DELETE {{baseUrl}}/addresses/1
+Authorization: Bearer {{token}}
+
+### 5. Đặt địa chỉ mặc định
+PUT {{baseUrl}}/addresses/1/default
+Authorization: Bearer {{token}}
+
+### ============================================
+### 📤 UPLOAD APIs (3 APIs)
+### ============================================
+
+### 1. Upload ảnh đơn
+POST {{baseUrl}}/upload/image
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="image.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/image.jpg
+------WebKitFormBoundary--
+
+### 2. Upload nhiều ảnh
+POST {{baseUrl}}/upload/images
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="images"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/image1.jpg
+------WebKitFormBoundary
+Content-Disposition: form-data; name="images"; filename="image2.jpg"
+Content-Type: image/jpeg
+
+< ./path/to/image2.jpg
+------WebKitFormBoundary--
+
+### 3. Xóa file
+DELETE {{baseUrl}}/upload/image.jpg
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 📊 DASHBOARD APIs (5 APIs)
+### ============================================
+
+### 1. Thống kê tổng quan (Admin)
+GET {{baseUrl}}/dashboard/overview
+Authorization: Bearer {{adminToken}}
+
+### 2. Thống kê doanh thu (Admin)
+GET {{baseUrl}}/dashboard/revenue?start_date=2024-01-01&end_date=2024-12-31
+Authorization: Bearer {{adminToken}}
+
+### 3. Sản phẩm bán chạy (Admin)
+GET {{baseUrl}}/dashboard/top-products?limit=10
+Authorization: Bearer {{adminToken}}
+
+### 4. Đơn hàng gần đây (Admin)
+GET {{baseUrl}}/dashboard/recent-orders?limit=20
+Authorization: Bearer {{adminToken}}
+
+### 5. Thống kê khách hàng (Admin)
+GET {{baseUrl}}/dashboard/customers
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 🔔 NOTIFICATION APIs (4 APIs)
+### ============================================
+
+### 1. Lấy danh sách thông báo
+GET {{baseUrl}}/notifications?page=1&limit=20
+Authorization: Bearer {{token}}
+
+### 2. Đánh dấu đã đọc
+PUT {{baseUrl}}/notifications/1/read
+Authorization: Bearer {{token}}
+
+### 3. Đánh dấu tất cả đã đọc
+PUT {{baseUrl}}/notifications/read-all
+Authorization: Bearer {{token}}
+
+### 4. Xóa thông báo
+DELETE {{baseUrl}}/notifications/1
+Authorization: Bearer {{token}}
+
+### ============================================
+### ⚙️ SETTINGS APIs (4 APIs)
+### ============================================
+
+### 1. Lấy cài đặt hệ thống
+GET {{baseUrl}}/settings
+
+### 2. Cập nhật cài đặt (Admin)
+PUT {{baseUrl}}/settings
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "site_name": "UTESHOP",
+  "site_description": "Shop thời trang uy tín",
+  "contact_email": "support@uteshop.com"
+}
+
+### 3. Upload logo (Admin)
+POST {{baseUrl}}/settings/logo
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "logo_url": "/uploads/logo.png"
+}
+
+### 4. Upload banner (Admin)
+POST {{baseUrl}}/settings/banner
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "banner_url": "/uploads/banner.jpg",
+  "position": "home_main"
+}
+
+### ============================================
+### 📈 ANALYTICS APIs (4 APIs)
+### ============================================
+
+### 1. Thống kê tổng quan (Admin)
+GET {{baseUrl}}/analytics/overview?start_date=2024-01-01&end_date=2024-12-31
+Authorization: Bearer {{adminToken}}
+
+### 2. Phân tích doanh thu (Admin)
+GET {{baseUrl}}/analytics/revenue?start_date=2024-01-01&end_date=2024-12-31&group_by=month
+Authorization: Bearer {{adminToken}}
+
+### 3. Sản phẩm bán chạy (Admin)
+GET {{baseUrl}}/analytics/top-products?limit=10
+Authorization: Bearer {{adminToken}}
+
+### 4. Phân tích khách hàng (Admin)
+GET {{baseUrl}}/analytics/customers?limit=10
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 📝 BLOG APIs (8 APIs)
+### ============================================
+
+### 1. Lấy danh sách blogs
+GET {{baseUrl}}/blogs?page=1&limit=10
+
+### 2. Lấy blog theo ID
+GET {{baseUrl}}/blogs/1
+
+### 3. Lấy blog theo slug
+GET {{baseUrl}}/blogs/slug/huong-dan-chon-ao-thun
+
+### 4. Tạo blog (Admin)
+POST {{baseUrl}}/blogs
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Hướng dẫn chọn áo thun",
+  "slug": "huong-dan-chon-ao-thun",
+  "content": "Nội dung blog...",
+  "excerpt": "Tóm tắt...",
+  "featured_image": "/uploads/blog.jpg"
+}
+
+### 5. Cập nhật blog (Admin)
+PUT {{baseUrl}}/blogs/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Hướng dẫn chọn áo thun updated",
+  "is_published": 1
+}
+
+### 6. Xóa blog (Admin)
+DELETE {{baseUrl}}/blogs/1
+Authorization: Bearer {{adminToken}}
+
+### 7. Lấy comments của blog
+GET {{baseUrl}}/blogs/1/comments?page=1&limit=10
+
+### 8. Thêm comment
+POST {{baseUrl}}/blogs/1/comments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "content": "Bài viết rất hay!"
+}
+
+### ============================================
+### 📞 CONTACT APIs (4 APIs)
+### ============================================
+
+### 1. Gửi form liên hệ
+POST {{baseUrl}}/contact
+Content-Type: application/json
+
+{
+  "name": "Nguyễn Văn A",
+  "email": "email@example.com",
+  "phone": "0123456789",
+  "subject": "Hỏi về sản phẩm",
+  "message": "Tôi muốn hỏi về..."
+}
+
+### 2. Lấy danh sách tin nhắn (Admin)
+GET {{baseUrl}}/contact/messages?page=1&limit=20
+Authorization: Bearer {{adminToken}}
+
+### 3. Trả lời tin nhắn (Admin)
+POST {{baseUrl}}/contact/1/reply
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "reply": "Cảm ơn bạn đã liên hệ..."
+}
+
+### 4. Xóa tin nhắn (Admin)
+DELETE {{baseUrl}}/contact/1
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### 🆕 NEW PRODUCTS APIs (1 API)
+### ============================================
+
+### 1. Lấy sản phẩm mới
+GET {{baseUrl}}/products/new?page=1&limit=12&days=30
+
+### 2. Lấy sản phẩm mới trong 7 ngày
+GET {{baseUrl}}/products/new?page=1&limit=8&days=7
+
+### 3. Lấy sản phẩm mới trong 60 ngày
+GET {{baseUrl}}/products/new?page=1&limit=20&days=60
+
+### ============================================
+### 🎉 TOTAL: 118 APIs COMPLETED!
+### ============================================
+

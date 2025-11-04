@@ -1,0 +1,549 @@
+/* Auth Pages Styles */
+
+/* Login Page */
+.tf-login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+}
+
+.tf-login-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.tf-login-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tf-login-form-header .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.tf-login-form-header .subtitle {
+  color: #666;
+  margin-bottom: 0;
+}
+
+.tf-login-form-body .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.tf-login-form-body .form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.tf-login-form-body .form-control {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tf-login-form-body .form-control:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.tf-login-form-body .input-group .btn {
+  border: 2px solid #e9ecef;
+  border-left: none;
+}
+
+.tf-login-form-body .input-group .form-control {
+  border-right: none;
+}
+
+.tf-login-form-body .input-group .form-control:focus {
+  border-right: none;
+}
+
+.tf-login-form-body .input-group .btn:focus {
+  border-color: #667eea;
+  box-shadow: none;
+}
+
+.tf-login-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tf-login-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tf-login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tf-login-form-divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.tf-login-form-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e9ecef;
+}
+
+.tf-login-form-divider span {
+  background: white;
+  padding: 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.tf-social-login {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tf-google-btn,
+.tf-facebook-btn {
+  flex: 1;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.tf-google-btn {
+  border-color: #db4437;
+  color: #db4437;
+}
+
+.tf-google-btn:hover:not(:disabled) {
+  background: #db4437;
+  color: white;
+}
+
+.tf-facebook-btn {
+  border-color: #4267B2;
+  color: #4267B2;
+}
+
+.tf-facebook-btn:hover:not(:disabled) {
+  background: #4267B2;
+  color: white;
+}
+
+.tf-login-form-footer {
+  text-align: center;
+}
+
+.tf-login-form-footer .register-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tf-login-form-footer .register-link:hover {
+  text-decoration: underline;
+}
+
+.forgot-password-link {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+/* Register Page */
+.tf-register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+}
+
+.tf-register-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.tf-register-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tf-register-form-header .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.tf-register-form-header .subtitle {
+  color: #666;
+  margin-bottom: 0;
+}
+
+.password-errors {
+  margin-top: 0.5rem;
+}
+
+.password-errors small {
+  font-size: 0.8rem;
+}
+
+.tf-register-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tf-register-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tf-register-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tf-register-form-divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.tf-register-form-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e9ecef;
+}
+
+.tf-register-form-divider span {
+  background: white;
+  padding: 0 1rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.tf-social-register {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tf-register-form-footer {
+  text-align: center;
+}
+
+.tf-register-form-footer .login-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tf-register-form-footer .login-link:hover {
+  text-decoration: underline;
+}
+
+.terms-link,
+.privacy-link {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.terms-link:hover,
+.privacy-link:hover {
+  text-decoration: underline;
+}
+
+/* Forgot Password Page */
+.tf-forgot-password-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+}
+
+.tf-forgot-password-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.tf-forgot-password-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tf-forgot-password-form-header .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.tf-forgot-password-form-header .subtitle {
+  color: #666;
+  margin-bottom: 0;
+}
+
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.tf-forgot-password-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tf-forgot-password-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tf-forgot-password-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tf-forgot-password-form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.tf-forgot-password-form-actions .btn {
+  flex: 1;
+}
+
+.email-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.email-info p {
+  margin-bottom: 0.5rem;
+}
+
+.tf-forgot-password-form-footer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.tf-forgot-password-form-footer .login-link,
+.tf-forgot-password-form-footer .register-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tf-forgot-password-form-footer .login-link:hover,
+.tf-forgot-password-form-footer .register-link:hover {
+  text-decoration: underline;
+}
+
+/* Reset Password Page */
+.tf-reset-password-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+}
+
+.tf-reset-password-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.tf-reset-password-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.tf-reset-password-form-header .title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.tf-reset-password-form-header .subtitle {
+  color: #666;
+  margin-bottom: 0;
+}
+
+.tf-reset-password-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tf-reset-password-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.tf-reset-password-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.password-requirements {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.password-requirements h6 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.password-requirements ul {
+  margin-bottom: 0;
+}
+
+.password-requirements li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.password-requirements li i {
+  margin-right: 0.5rem;
+  width: 16px;
+}
+
+.tf-reset-password-form-footer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.tf-reset-password-form-footer .login-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.tf-reset-password-form-footer .login-link:hover {
+  text-decoration: underline;
+}
+
+/* Common Styles */
+.alert {
+  border-radius: 8px;
+  border: none;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.alert-success {
+  background: #d1edff;
+  color: #0c5460;
+}
+
+.alert i {
+  margin-right: 0.5rem;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  opacity: 0.5;
+  cursor: pointer;
+  float: right;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tf-login-page,
+  .tf-register-page,
+  .tf-forgot-password-page,
+  .tf-reset-password-page {
+    padding: 1rem 0;
+  }
+  
+  .tf-login-form,
+  .tf-register-form,
+  .tf-forgot-password-form,
+  .tf-reset-password-form {
+    padding: 1.5rem;
+  }
+  
+  .tf-social-login,
+  .tf-social-register {
+    flex-direction: column;
+  }
+  
+  .tf-forgot-password-form-actions {
+    flex-direction: column;
+  }
+}

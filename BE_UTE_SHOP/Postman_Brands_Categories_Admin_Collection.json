@@ -1,0 +1,454 @@
+{
+	"info": {
+		"_postman_id": "brands-categories-admin-apis",
+		"name": "UTESHOP - Brands & Categories Admin APIs",
+		"description": "Collection các API quản lý Brands và Categories cho Admin Dashboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Brands Admin APIs",
+			"item": [
+				{
+					"name": "1. GET Brands List (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/brands/admin/list?page=1&limit=20&search=&is_active=&sort_by=created_at&sort_order=DESC",
+							"host": ["{{baseUrl}}"],
+							"path": ["brands", "admin", "list"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Trang hiện tại"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Số lượng mỗi trang"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Tìm kiếm theo name hoặc slug",
+									"disabled": true
+								},
+								{
+									"key": "is_active",
+									"value": "",
+									"description": "Filter: 1 (active), 0 (inactive), để trống = tất cả",
+									"disabled": true
+								},
+								{
+									"key": "sort_by",
+									"value": "created_at",
+									"description": "Sort theo: name, slug, created_at, updated_at, sort_order"
+								},
+								{
+									"key": "sort_order",
+									"value": "DESC",
+									"description": "ASC hoặc DESC"
+								}
+							]
+						},
+						"description": "Lấy danh sách brands cho admin (bao gồm cả inactive). Response bao gồm product_count, total_product_count và pagination."
+					}
+				},
+				{
+					"name": "2. GET Brand Detail (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/brands/admin/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["brands", "admin", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Brand ID"
+								}
+							]
+						},
+						"description": "Lấy chi tiết brand cho admin (bao gồm cả inactive). Response bao gồm product_count và total_product_count."
+					}
+				},
+				{
+					"name": "3. POST Create Brand",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Gucci\",\n  \"slug\": \"gucci\",\n  \"logo\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/brands/gucci-logo.jpg\",\n  \"description\": \"Thương hiệu thời trang xa xỉ hàng đầu thế giới từ Ý\",\n  \"website\": \"https://www.gucci.com\",\n  \"sort_order\": 6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brands",
+							"host": ["{{baseUrl}}"],
+							"path": ["brands"]
+						},
+						"description": "Tạo brand mới. Fields: name (required), slug (optional - auto generate), logo, description, website, sort_order (default: 0)"
+					}
+				},
+				{
+					"name": "4. PUT Update Brand",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nike Updated\",\n  \"slug\": \"nike-updated\",\n  \"logo\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/brands/nike-logo-new.jpg\",\n  \"description\": \"Thương hiệu thể thao hàng đầu thế giới - Updated\",\n  \"website\": \"https://nike.com\",\n  \"sort_order\": 1,\n  \"is_active\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/brands/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["brands", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Brand ID"
+								}
+							]
+						},
+						"description": "Cập nhật brand. Tất cả fields đều optional, chỉ cập nhật những field được gửi lên."
+					}
+				},
+				{
+					"name": "5. DELETE Brand",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/brands/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["brands", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Brand ID"
+								}
+							]
+						},
+						"description": "Xóa brand (soft delete: set is_active = 0). Không thể xóa nếu brand đang có sản phẩm."
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories Admin APIs",
+			"item": [
+				{
+					"name": "1. GET Categories Tree (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/categories/admin/tree?is_active=",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", "admin", "tree"],
+							"query": [
+								{
+									"key": "is_active",
+									"value": "",
+									"description": "Filter: 1 (active), 0 (inactive), để trống = tất cả",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Lấy categories dạng TREE (phân cấp nhiều lớp) cho admin. Response là array các root categories, mỗi category có 'children' array chứa sub categories, có thể lồng nhiều lớp. Bao gồm cả inactive nếu không filter."
+					}
+				},
+				{
+					"name": "2. GET Categories List (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/categories/admin/list?page=1&limit=20&search=&is_active=&parent_id=&sort_by=created_at&sort_order=DESC",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", "admin", "list"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Trang hiện tại"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Số lượng mỗi trang"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"description": "Tìm kiếm theo name hoặc slug",
+									"disabled": true
+								},
+								{
+									"key": "is_active",
+									"value": "",
+									"description": "Filter: 1 (active), 0 (inactive), để trống = tất cả",
+									"disabled": true
+								},
+								{
+									"key": "parent_id",
+									"value": "",
+									"description": "Filter theo parent_id. null = chỉ lấy root categories, số = lấy categories con của parent đó",
+									"disabled": true
+								},
+								{
+									"key": "sort_by",
+									"value": "created_at",
+									"description": "Sort theo: name, slug, created_at, updated_at, sort_order"
+								},
+								{
+									"key": "sort_order",
+									"value": "DESC",
+									"description": "ASC hoặc DESC"
+								}
+							]
+						},
+						"description": "Lấy danh sách categories cho admin (bao gồm cả inactive). Response bao gồm parent_name, parent_slug, product_count, total_product_count, sub_category_count và pagination."
+					}
+				},
+				{
+					"name": "3. GET Category Detail (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/categories/admin/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", "admin", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						},
+						"description": "Lấy chi tiết category cho admin (bao gồm cả inactive). Response bao gồm parent info, product counts, sub_categories."
+					}
+				},
+				{
+					"name": "4. POST Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Thời trang cao cấp\",\n  \"slug\": \"thoi-trang-cao-cap\",\n  \"description\": \"Danh mục thời trang cao cấp dành cho khách hàng VIP\",\n  \"image\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/categories/luxury-fashion.jpg\",\n  \"parent_id\": null,\n  \"gender\": \"all\",\n  \"sort_order\": 10,\n  \"meta_title\": \"Thời trang cao cấp - UTESHOP\",\n  \"meta_description\": \"Khám phá bộ sưu tập thời trang cao cấp tại UTESHOP\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						},
+						"description": "Tạo category mới. Fields: name (required), slug (optional - auto generate), description, image, parent_id (null = root category), gender (male/female/unisex/all, default: all), sort_order (default: 0), meta_title, meta_description"
+					}
+				},
+				{
+					"name": "5. POST Create Sub Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Áo sơ mi cao cấp\",\n  \"slug\": \"ao-so-mi-cao-cap\",\n  \"description\": \"Áo sơ mi thời trang cao cấp\",\n  \"image\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/categories/luxury-shirt.jpg\",\n  \"parent_id\": 5,\n  \"gender\": \"male\",\n  \"sort_order\": 1,\n  \"meta_title\": \"Áo sơ mi cao cấp\",\n  \"meta_description\": \"Bộ sưu tập áo sơ mi cao cấp\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						},
+						"description": "Tạo sub category (category con). Set parent_id = ID của category cha."
+					}
+				},
+				{
+					"name": "6. PUT Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Thời trang Nam - Updated\",\n  \"slug\": \"thoi-trang-nam-updated\",\n  \"description\": \"Thời trang nam cập nhật\",\n  \"image\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/categories/men-fashion-new.jpg\",\n  \"parent_id\": 1,\n  \"gender\": \"male\",\n  \"sort_order\": 1,\n  \"meta_title\": \"Thời trang Nam - UTESHOP\",\n  \"meta_description\": \"Khám phá bộ sưu tập thời trang nam\",\n  \"is_active\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						},
+						"description": "Cập nhật category. Tất cả fields đều optional, chỉ cập nhật những field được gửi lên."
+					}
+				},
+				{
+					"name": "7. DELETE Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{adminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/categories/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1",
+									"description": "Category ID"
+								}
+							]
+						},
+						"description": "Xóa category (soft delete: set is_active = 0). Không thể xóa nếu category đang có sản phẩm."
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "your_admin_token_here",
+			"type": "string"
+		}
+	]
+}

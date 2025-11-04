@@ -1,0 +1,467 @@
+### ============================================
+### 💰 REFUND & CANCELLATION APIs TEST
+### ============================================
+### 
+### Hướng dẫn sử dụng:
+### 1. Thay {{userToken}} bằng token của bạn (lấy từ login)
+### 2. Thay {{orderId}} bằng ID đơn hàng đã thanh toán
+### 3. Thay {{transactionId}} bằng transaction ID từ payment
+### 4. Đảm bảo đơn hàng đã thanh toán thành công (payment_status = 'paid')
+###
+### Lưu ý: Với chế độ spending mode của PayOS, khi hủy đơn hàng đã thanh toán,
+### PayOS sẽ tự động hoàn tiền về tài khoản khách hàng
+###
+### ============================================
+
+### Variables
+@baseUrl = http://localhost:5000/api
+@userToken = YOUR_TOKEN_HERE
+@orderId = 1
+@transactionId = 1
+@orderCode = 123456789
+
+### ============================================
+### 🔐 BƯỚC 1: ĐĂNG NHẬP
+### ============================================
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+### → Lưu token từ response vào {{userToken}}
+
+### ============================================
+### 💰 HOÀN TIỀN CHO ĐƠN HÀNG ĐÃ THANH TOÁN
+### ============================================
+### API này cho phép hoàn tiền cho đơn hàng đã thanh toán thành công
+###
+
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}},
+  "amount": 600000,
+  "reason": "Hủy đơn hàng theo yêu cầu khách hàng"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Yêu cầu hoàn tiền đã được gửi thành công",
+###   "data": {
+###     "refund_id": 1,
+###     "refund_amount": 600000,
+###     "transaction_id": 1,
+###     "payos_refund_id": "refund_abc123",
+###     "status": "processing"
+###   }
+### }
+###
+### ❌ Lỗi:
+### - 404: Order không tồn tại
+### - 400: Order chưa thanh toán
+### - 400: Order đã được refund
+### - 400: Số tiền refund > số tiền đã thanh toán
+###
+
+### ============================================
+### 💰 HOÀN TIỀN TOÀN BỘ (Không chỉ định amount)
+### ============================================
+
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}},
+  "reason": "Hoàn tiền toàn bộ đơn hàng"
+}
+
+###
+### → Nếu không có amount, sẽ refund toàn bộ số tiền đã thanh toán
+###
+
+### ============================================
+### 🛒 HỦY ĐƠN HÀNG (VỚI AUTO REFUND)
+### ============================================
+### Khi hủy đơn hàng đã thanh toán qua PayOS, hệ thống sẽ tự động refund
+### Hệ thống sẽ:
+### 1. Tạo refund record trong database
+### 2. Gọi PayOS refund API
+### 3. Cập nhật transaction status = 'refunded'
+### 4. Cập nhật order payment_status = 'refunded'
+### 5. Hoàn lại tồn kho sản phẩm
+###
+
+POST {{baseUrl}}/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Không còn muốn mua nữa"
+}
+
+###
+### ✅ Response thành công (nếu đã thanh toán):
+### {
+###   "success": true,
+###   "message": "Hủy đơn hàng thành công. Yêu cầu hoàn tiền đã được gửi.",
+###   "data": {
+###     "refund": {
+###       "refund_id": 1,
+###       "payos_refund_id": "refund_abc123",
+###       "amount": 600000,
+###       "status": "processing"
+###     }
+###   }
+### }
+###
+### ✅ Response thành công (nếu chưa thanh toán):
+### {
+###   "success": true,
+###   "message": "Hủy đơn hàng thành công"
+### }
+###
+### ❌ Lỗi:
+### - 404: Order không tồn tại
+### - 403: Order không thuộc về user
+### - 400: Order đã được xử lý (status_id > 2 và chưa thanh toán)
+###
+
+### ============================================
+### 🔄 HỦY PAYMENT TRANSACTION
+### ============================================
+### Hủy payment link chưa thanh toán (pending/processing)
+###
+
+POST {{baseUrl}}/payment/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "transaction_id": {{transactionId}}
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Hủy thanh toán thành công",
+###   "data": {
+###     "transaction_id": 1,
+###     "status": "cancelled"
+###   }
+### }
+###
+### ❌ Lỗi:
+### - 404: Transaction không tồn tại
+### - 404: Transaction không thuộc về user
+### - 400: Transaction đã completed
+###
+
+### ============================================
+### 🔄 RETRY PAYMENT - TẠO LẠI PAYMENT LINK
+### ============================================
+### Tạo lại payment link cho đơn hàng payment failed hoặc cancelled
+###
+
+POST {{baseUrl}}/payment/retry
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}}
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Tạo payment link thành công",
+###   "data": {
+###     "transaction_id": 2,
+###     "payment_url": "https://pay.payos.vn/web/...",
+###     "qr_code_url": "https://img.vietqr.io/...",
+###     "order_code": 1234567890
+###   }
+### }
+###
+### ❌ Lỗi:
+### - 404: Order không tồn tại
+### - 400: Order payment_status là 'paid'
+###
+
+### ============================================
+### 📋 LUỒNG TEST HOÀN CHỈNH: THANH TOÁN → REFUND
+### ============================================
+
+### Bước 1: Tạo đơn hàng
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "items": [
+    {
+      "product_id": 1,
+      "quantity": 2
+    }
+  ],
+  "shipping_address": {
+    "full_name": "Nguyễn Văn A",
+    "phone": "0123456789",
+    "address": "123 Đường ABC",
+    "ward": "Phường 1",
+    "district": "Quận 1",
+    "city": "TP.HCM"
+  },
+  "billing_address": {
+    "full_name": "Nguyễn Văn A",
+    "phone": "0123456789",
+    "address": "123 Đường ABC",
+    "ward": "Phường 1",
+    "district": "Quận 1",
+    "city": "TP.HCM"
+  },
+  "payment_method": "payos"
+}
+
+### → Lưu order_id từ response
+
+### Bước 2: Tạo payment link
+POST {{baseUrl}}/payment/payos/create
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}}
+}
+
+### → Lưu order_code và payment_url
+### → Mở payment_url trong browser để thanh toán
+
+### Bước 3: Thanh toán tại PayOS (external)
+### → Thanh toán thành công
+### → PayOS redirect về Return URL
+
+### Bước 4: Kiểm tra trạng thái thanh toán
+GET {{baseUrl}}/payment/payos/check/{{orderCode}}
+Content-Type: application/json
+
+### → Kiểm tra status = "completed", payment_status = "paid"
+
+### Bước 5: Hoàn tiền (Có 2 cách)
+
+### Cách 1: Refund thủ công qua API refund
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}},
+  "reason": "Hủy đơn hàng"
+}
+
+### Cách 2: Hủy đơn hàng (tự động refund)
+POST {{baseUrl}}/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Không còn muốn mua nữa"
+}
+
+### → Hệ thống tự động:
+###   - Tạo refund record trong payment_refunds table
+###   - Gọi PayOS refund API
+###   - Cập nhật payment_transactions: status = 'refunded'
+###   - Cập nhật orders: payment_status = 'refunded'
+###   - Hoàn lại tồn kho sản phẩm (tăng stock_quantity)
+
+### Bước 6: Kiểm tra refund status
+GET {{baseUrl}}/payment/my-payments?status=refunded
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### → Xem refund đã được xử lý chưa
+
+### Bước 7: Xem chi tiết đơn hàng đã refund
+GET {{baseUrl}}/orders/{{orderId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### → Kiểm tra payment_status = "refunded"
+
+### ============================================
+### ❌ TEST CÁC TRƯỜNG HỢP LỖI
+### ============================================
+
+### Test 1: Refund đơn hàng chưa thanh toán
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}}
+}
+
+### → Expected: 400 Bad Request - "Chỉ có thể hoàn tiền cho đơn hàng đã thanh toán"
+
+### Test 2: Refund đơn hàng không tồn tại
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": 99999
+}
+
+### → Expected: 404 Not Found - "Không tìm thấy đơn hàng"
+
+### Test 3: Refund đơn hàng đã refund
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}}
+}
+
+### → Expected: 400 Bad Request - "Đơn hàng đã được hoàn tiền"
+
+### Test 4: Refund với số tiền lớn hơn số tiền đã thanh toán
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}},
+  "amount": 999999999
+}
+
+### → Expected: 400 Bad Request - "Số tiền hoàn trả không được lớn hơn số tiền đã thanh toán"
+
+### Test 5: Refund không có order_id
+POST {{baseUrl}}/payment/refund
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Test"
+}
+
+### → Expected: 400 Bad Request - "Order ID là bắt buộc"
+
+### Test 6: Hủy payment transaction không tồn tại
+POST {{baseUrl}}/payment/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "transaction_id": 99999
+}
+
+### → Expected: 404 Not Found - "Không tìm thấy giao dịch"
+
+### Test 7: Hủy payment đã completed
+POST {{baseUrl}}/payment/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "transaction_id": {{transactionId}}
+}
+
+### → Expected: 400 Bad Request - "Không thể hủy giao dịch với trạng thái completed"
+
+### Test 8: Hủy đơn hàng không tồn tại
+POST {{baseUrl}}/orders/99999/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Test"
+}
+
+### → Expected: 404 Not Found - "Không tìm thấy đơn hàng"
+
+### Test 9: Hủy đơn hàng đã được xử lý (đã gửi đi)
+POST {{baseUrl}}/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Test"
+}
+
+### → Expected: 400 Bad Request - "Không thể hủy đơn hàng đã được xử lý"
+### (Nếu order.status_id > 2 và payment_status != 'paid')
+
+### Test 10: Retry payment cho đơn hàng đã paid
+POST {{baseUrl}}/payment/retry
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}}
+}
+
+### → Expected: 400 Bad Request - "Không thể tạo lại payment link cho đơn hàng với trạng thái paid"
+
+### ============================================
+### 📊 KIỂM TRA TRẠNG THÁI SAU REFUND
+### ============================================
+
+### 1. Xem lịch sử thanh toán với filter refunded
+GET {{baseUrl}}/payment/my-payments?status=refunded&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### 2. Xem chi tiết đơn hàng đã refund
+GET {{baseUrl}}/orders/{{orderId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### → Kiểm tra:
+###   - payment_status = "refunded"
+###   - status_id = 5 (cancelled)
+###   - Có refund record trong database
+
+### 3. Xem tất cả lịch sử thanh toán
+GET {{baseUrl}}/payment/my-payments?page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### ============================================
+### 💡 LƯU Ý QUAN TRỌNG
+### ============================================
+###
+### 1. Với chế độ spending mode của PayOS:
+###    - Khi hủy đơn hàng đã thanh toán, PayOS sẽ tự động hoàn tiền
+###    - Thời gian hoàn tiền có thể mất 1-3 ngày làm việc
+###
+### 2. Refund có thể được thực hiện theo 2 cách:
+###    - Refund thủ công qua API /payment/refund
+###    - Tự động khi hủy đơn hàng qua API /orders/:id/cancel
+###
+### 3. Sau khi refund:
+###    - Transaction status = 'refunded'
+###    - Order payment_status = 'refunded'
+###    - Order status_id = 5 (cancelled)
+###    - Tồn kho sản phẩm được hoàn lại
+###    - Refund record được lưu vào payment_refunds table
+###
+### 4. Refund status có thể là:
+###    - pending: Chờ xử lý
+###    - processing: Đang xử lý
+###    - completed: Đã hoàn tiền thành công
+###    - failed: Hoàn tiền thất bại
+###
+###

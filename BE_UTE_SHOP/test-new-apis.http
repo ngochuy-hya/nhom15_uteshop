@@ -1,0 +1,216 @@
+### ============================================
+### TEST NEW APIs - BANNERS & GENDER FILTER
+### ============================================
+
+### Variables
+@baseUrl = http://localhost:5000/api
+@adminToken = YOUR_ADMIN_TOKEN_HERE
+
+### ============================================
+### BANNER APIs - PUBLIC
+### ============================================
+
+### 1. Lấy tất cả banners active
+GET {{baseUrl}}/banners
+Content-Type: application/json
+
+### 2. Lấy banners theo position (hero)
+GET {{baseUrl}}/banners?position=hero
+Content-Type: application/json
+
+### 3. Lấy banners theo position (sidebar)
+GET {{baseUrl}}/banners?position=sidebar
+Content-Type: application/json
+
+### 4. Lấy chi tiết banner theo ID
+GET {{baseUrl}}/banners/1
+Content-Type: application/json
+
+### ============================================
+### BANNER APIs - ADMIN
+### ============================================
+
+### 5. Lấy tất cả banners (bao gồm inactive) - Admin
+GET {{baseUrl}}/banners/admin/all
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### 6. Tạo banner mới - Admin
+POST {{baseUrl}}/banners/admin
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Summer Sale 2024",
+  "subtitle": "Giảm giá mùa hè",
+  "description": "Giảm giá lên đến 70% cho tất cả sản phẩm mùa hè",
+  "image_url": "/images/banners/summer-sale.jpg",
+  "mobile_image_url": "/images/banners/summer-sale-mobile.jpg",
+  "link_url": "/shop-default?season=summer&is_sale=true",
+  "button_text": "Mua ngay",
+  "position": "hero",
+  "display_order": 1,
+  "is_active": true
+}
+
+### 7. Cập nhật banner - Admin
+PUT {{baseUrl}}/banners/admin/1
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "title": "Summer Collection 2024 - Updated",
+  "is_active": true,
+  "display_order": 2
+}
+
+### 8. Toggle trạng thái banner - Admin
+PATCH {{baseUrl}}/banners/admin/1/toggle-status
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### 9. Xóa banner - Admin
+DELETE {{baseUrl}}/banners/admin/5
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### ============================================
+### PRODUCT APIs - FILTER BY GENDER & SEASON
+### ============================================
+
+### 10. Lấy sản phẩm nam (male)
+GET {{baseUrl}}/products?gender=male&limit=10
+Content-Type: application/json
+
+### 11. Lấy sản phẩm nữ (female)
+GET {{baseUrl}}/products?gender=female&limit=10
+Content-Type: application/json
+
+### 12. Lấy sản phẩm unisex
+GET {{baseUrl}}/products?gender=unisex&limit=10
+Content-Type: application/json
+
+### 13. Lấy sản phẩm mùa hè (summer)
+GET {{baseUrl}}/products?season=summer&limit=10
+Content-Type: application/json
+
+### 14. Lấy sản phẩm mùa đông (winter)
+GET {{baseUrl}}/products?season=winter&limit=10
+Content-Type: application/json
+
+### 15. Kết hợp filter gender + season
+GET {{baseUrl}}/products?gender=female&season=summer&limit=10
+Content-Type: application/json
+
+### 16. Filter nam + giá + sale
+GET {{baseUrl}}/products?gender=male&min_price=100000&max_price=500000&is_sale=true
+Content-Type: application/json
+
+### ============================================
+### PRODUCT ADMIN APIs - WITH GENDER & SEASON
+### ============================================
+
+### 17. Tạo sản phẩm mới với gender & season - Admin
+POST {{baseUrl}}/products/admin
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Áo sơ mi nam công sở",
+  "description": "Áo sơ mi nam cao cấp, phù hợp công sở",
+  "short_description": "Áo sơ mi nam cao cấp",
+  "price": 350000,
+  "sale_price": 280000,
+  "stock_quantity": 100,
+  "category_id": 1,
+  "gender": "male",
+  "season": "all",
+  "brand_id": 1,
+  "is_featured": true,
+  "is_new": true,
+  "is_sale": true
+}
+
+### 18. Cập nhật sản phẩm với gender & season - Admin
+PUT {{baseUrl}}/products/admin/1
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "gender": "male",
+  "season": "summer",
+  "is_featured": true,
+  "is_sale": true
+}
+
+### 19. Lấy sản phẩm featured theo gender
+GET {{baseUrl}}/products/featured?gender=female&limit=10
+Content-Type: application/json
+
+### 20. Lấy sản phẩm bestseller theo gender
+GET {{baseUrl}}/products/bestseller?gender=male&limit=10
+Content-Type: application/json
+
+### 21. Lấy sản phẩm mới theo gender
+GET {{baseUrl}}/products/new?gender=female&limit=10
+Content-Type: application/json
+
+### ============================================
+### CATEGORY & BRAND - Check existing CRUD
+### ============================================
+
+### 22. Tạo category mới - Admin
+POST {{baseUrl}}/categories/admin
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Thời trang nam",
+  "slug": "thoi-trang-nam",
+  "description": "Danh mục thời trang dành cho nam giới",
+  "sort_order": 1,
+  "is_active": true
+}
+
+### 23. Tạo brand mới - Admin
+POST {{baseUrl}}/brands/admin
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Gucci",
+  "slug": "gucci",
+  "description": "Thương hiệu thời trang xa xỉ",
+  "website": "https://gucci.com",
+  "sort_order": 1,
+  "is_active": true
+}
+
+### ============================================
+### COMBINED FILTERS TEST
+### ============================================
+
+### 24. Search với nhiều filters
+GET {{baseUrl}}/products?search=áo&gender=male&season=summer&is_sale=true&min_price=100000&sort_by=price&sort_order=ASC
+Content-Type: application/json
+
+### 25. Lấy sản phẩm featured + gender + brand
+GET {{baseUrl}}/products/featured?gender=female&brand_id=1&limit=12
+Content-Type: application/json
+
+### 26. Test pagination với gender filter
+GET {{baseUrl}}/products?gender=male&page=1&limit=12
+Content-Type: application/json
+
+### 27. Test sort theo giá với gender
+GET {{baseUrl}}/products?gender=female&sort_by=price&sort_order=DESC&limit=20
+Content-Type: application/json
+
+### ============================================
+### HEALTH CHECK
+### ============================================
+
+### 28. Health check
+GET {{baseUrl}}/health
+Content-Type: application/json
+

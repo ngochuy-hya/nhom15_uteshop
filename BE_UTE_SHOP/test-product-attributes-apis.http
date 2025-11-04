@@ -1,0 +1,438 @@
+### ============================================
+### 🎨 PRODUCT ATTRIBUTES APIs TEST
+### ============================================
+### 
+### APIs để quản lý thuộc tính sản phẩm (size, color, material, style)
+###
+### Hướng dẫn sử dụng:
+### 1. Thay {{adminToken}} bằng token của admin
+### 2. Thay {{productId}} bằng ID sản phẩm thực tế
+### 3. Thay {{attributeId}} bằng ID attribute sau khi tạo
+###
+### ============================================
+
+### Variables
+@baseUrl = http://localhost:5000/api
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdXRlc2hvcC5jb20iLCJyb2xlSWQiOjIsImlhdCI6MTc2MTk3MjYyMiwiZXhwIjoxNzYyNTc3NDIyfQ.BaWPLaD3RLXbnPW51S3bXHfq_hQtmA9uaFZT1ANh1Q4
+@productId = 1
+@attributeId = 1
+@userToken =
+### ============================================
+### 📋 PUBLIC APIs - Xem Attributes
+### ============================================
+
+### 1. Lấy tất cả attributes của một product
+GET {{baseUrl}}/product-attributes/product/{{productId}}
+Content-Type: application/json
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy danh sách thuộc tính sản phẩm thành công",
+###   "data": {
+###     "attributes": [
+###       {
+###         "id": 1,
+###         "product_id": 1,
+###         "attribute_type": "size",
+###         "attribute_name": "Kích thước",
+###         "attribute_value": "L",
+###         "price_adjustment": 0,
+###         "stock_quantity": 15,
+###         "is_active": 1,
+###         "created_at": "2024-11-01T10:30:00Z"
+###       }
+###     ],
+###     "total": 7
+###   }
+### }
+###
+
+### ============================================
+### 2. Lấy một attribute theo ID
+GET {{baseUrl}}/product-attributes/product/{{productId}}/{{attributeId}}
+Content-Type: application/json
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy thông tin thuộc tính thành công",
+###   "data": {
+###     "id": 1,
+###     "product_id": 1,
+###     "attribute_type": "size",
+###     "attribute_name": "Kích thước",
+###     "attribute_value": "L",
+###     "price_adjustment": 0,
+###     "stock_quantity": 15,
+###     "is_active": 1
+###   }
+### }
+###
+
+### ============================================
+### 3. Lấy attributes theo type (size, color, material, style)
+GET {{baseUrl}}/product-attributes/product/{{productId}}/type/size
+Content-Type: application/json
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy danh sách thuộc tính loại size thành công",
+###   "data": {
+###     "attributes": [
+###       {
+###         "id": 1,
+###         "attribute_type": "size",
+###         "attribute_value": "L",
+###         "stock_quantity": 15
+###       }
+###     ],
+###     "type": "size",
+###     "total": 4
+###   }
+### }
+###
+
+### ============================================
+### 🔐 ADMIN APIs - CRUD Attributes
+### ============================================
+
+### 4. Thêm attribute mới cho product
+POST {{baseUrl}}/product-attributes/product/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Kích thước",
+  "attribute_value": "XXL",
+  "price_adjustment": 50000,
+  "stock_quantity": 20,
+  "is_active": true
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Thêm thuộc tính sản phẩm thành công",
+###   "data": {
+###     "id": 8,
+###     "product_id": 1,
+###     "attribute_type": "size",
+###     "attribute_name": "Kích thước",
+###     "attribute_value": "XXL",
+###     "price_adjustment": 50000,
+###     "stock_quantity": 20,
+###     "is_active": true,
+###     "product_stock_updated": 95
+###   }
+### }
+###
+### → product_stock_updated = tổng stock mới của product sau khi thêm attribute
+###
+
+### ============================================
+### 5. Cập nhật attribute
+PUT {{baseUrl}}/product-attributes/product/{{productId}}/{{attributeId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Kích thước",
+  "attribute_value": "XL",
+  "price_adjustment": 30000,
+  "stock_quantity": 25,
+  "is_active": true
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Cập nhật thuộc tính sản phẩm thành công",
+###   "data": {
+###     "attribute": {
+###       "id": 1,
+###       "product_id": 1,
+###       "attribute_type": "size",
+###       "attribute_value": "XL",
+###       "stock_quantity": 25
+###     },
+###     "product_stock_updated": 100
+###   }
+### }
+###
+
+### ============================================
+### 6. Xóa attribute
+DELETE {{baseUrl}}/product-attributes/product/{{productId}}/{{attributeId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Xóa thuộc tính sản phẩm thành công",
+###   "data": {
+###     "product_stock_updated": 80
+###   }
+### }
+###
+### → Product stock_quantity sẽ được tự động cập nhật = tổng stock từ các attributes còn lại
+###
+
+### ============================================
+### 📊 PRODUCT APIs - Cập nhật
+### ============================================
+
+### 7. Lấy danh sách products (Admin - có is_active)
+GET {{baseUrl}}/products?page=1&limit=20
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+###
+### ✅ Response cho Admin:
+### {
+###   "success": true,
+###   "data": {
+###     "products": [
+###       {
+###         "id": 1,
+###         "name": "Áo thun nam Nike",
+###         "price": 280000,
+###         "stock_quantity": 95,
+###         "is_active": 1,  ← Chỉ có khi là admin
+###         ...
+###       }
+###     ]
+###   }
+### }
+###
+
+### ============================================
+### 8. Tạo sản phẩm mới với attributes
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Áo thun nam Nike Dri-FIT",
+  "slug": "ao-thun-nam-nike-dri-fit",
+  "description": "Áo thun thể thao cao cấp",
+  "short_description": "Áo thun Nike",
+  "sku": "NKE-AT-002",
+  "price": 350000,
+  "sale_price": 300000,
+  "category_id": 1,
+  "gender": "male",
+  "season": "all",
+  "brand_id": 1,
+  "is_featured": true,
+  "attributes": [
+    {
+      "attribute_type": "size",
+      "attribute_name": "Kích thước",
+      "attribute_value": "S",
+      "price_adjustment": 0,
+      "stock_quantity": 10,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Kích thước",
+      "attribute_value": "M",
+      "price_adjustment": 0,
+      "stock_quantity": 15,
+      "is_active": true
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Màu sắc",
+      "attribute_value": "Đen",
+      "price_adjustment": 0,
+      "stock_quantity": 20,
+      "is_active": true
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Màu sắc",
+      "attribute_value": "Trắng",
+      "price_adjustment": 0,
+      "stock_quantity": 15,
+      "is_active": true
+    }
+  ]
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Tạo sản phẩm thành công",
+###   "data": {
+###     "id": 10,
+###     "name": "Áo thun nam Nike Dri-FIT",
+###     "slug": "ao-thun-nam-nike-dri-fit",
+###     "stock_quantity": 60
+###   }
+### }
+###
+### → stock_quantity = 10 + 15 + 20 + 15 = 60 (tự động tính từ attributes)
+###
+
+### ============================================
+### 🔄 COMPLETE FLOW TEST
+### ============================================
+
+### Bước 1: Admin tạo sản phẩm với attributes
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Test Product với Attributes",
+  "price": 500000,
+  "category_id": 1,
+  "attributes": [
+    {
+      "attribute_type": "size",
+      "attribute_name": "Kích thước",
+      "attribute_value": "M",
+      "stock_quantity": 10
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Màu sắc",
+      "attribute_value": "Đỏ",
+      "stock_quantity": 5
+    }
+  ]
+}
+
+### → Lưu product_id từ response
+
+###
+### Bước 2: Xem attributes của product
+GET {{baseUrl}}/product-attributes/product/{{productId}}
+Content-Type: application/json
+
+### → Kiểm tra attributes đã được tạo
+
+###
+### Bước 3: Thêm attribute mới
+POST {{baseUrl}}/product-attributes/product/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Kích thước",
+  "attribute_value": "L",
+  "stock_quantity": 8
+}
+
+### → Product stock sẽ tự động cập nhật = 10 + 5 + 8 = 23
+
+###
+### Bước 4: Cập nhật attribute
+PUT {{baseUrl}}/product-attributes/product/{{productId}}/{{attributeId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "stock_quantity": 15
+}
+
+### → Product stock sẽ tự động cập nhật = 15 + 5 + 8 = 28
+
+###
+### Bước 5: Xóa attribute
+DELETE {{baseUrl}}/product-attributes/product/{{productId}}/{{attributeId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Product stock sẽ tự động cập nhật = 15 + 8 = 23
+
+###
+### Bước 6: Xem product để kiểm tra stock đã cập nhật
+GET {{baseUrl}}/products/{{productId}}
+Content-Type: application/json
+
+### → Kiểm tra stock_quantity = 23
+
+###
+
+### ============================================
+### ❌ ERROR SCENARIOS
+### ============================================
+
+### Test 1: Thêm attribute với attribute_type không hợp lệ
+POST {{baseUrl}}/product-attributes/product/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "attribute_type": "invalid_type",
+  "attribute_name": "Test",
+  "attribute_value": "Value"
+}
+
+### → Expected: 400 Bad Request - "Loại thuộc tính không hợp lệ"
+
+###
+### Test 2: Thêm attribute cho product không tồn tại
+POST {{baseUrl}}/product-attributes/product/99999
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Test",
+  "attribute_value": "Value"
+}
+
+### → Expected: 404 Not Found - "Không tìm thấy sản phẩm"
+
+###
+### Test 3: Cập nhật attribute không tồn tại
+PUT {{baseUrl}}/product-attributes/product/{{productId}}/99999
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "stock_quantity": 10
+}
+
+### → Expected: 404 Not Found - "Không tìm thấy thuộc tính"
+
+###
+### Test 4: Xóa attribute không tồn tại
+DELETE {{baseUrl}}/product-attributes/product/{{productId}}/99999
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### → Expected: 404 Not Found - "Không tìm thấy thuộc tính"
+
+###
+### Test 5: User thường cố gắng tạo attribute (không có quyền admin)
+POST {{baseUrl}}/product-attributes/product/{{productId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Test",
+  "attribute_value": "Value"
+}
+
+### → Expected: 403 Forbidden - "Admin access required"
+
+###
+

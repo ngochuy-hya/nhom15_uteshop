@@ -1,0 +1,95 @@
+### ============================================
+### Coupon APIs - REST Client Tests
+### ============================================
+
+@host = http://localhost:5000
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImVtYWlsIjoibmd1eWVuaHV5cG0xQGdtYWlsLmNvbSIsInJvbGVJZCI6MSwiaWF0IjoxNzYyMTYwODMxLCJleHAiOjE3NjI3NjU2MzF9.9YIMGP-Fr8Z_GdCAgeMVew8mqIKFOa3s0nhyAREUMWY
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdXRlc2hvcC5jb20iLCJyb2xlSWQiOjIsImlhdCI6MTc2MjE2MDk2MSwiZXhwIjoxNzYyNzY1NzYxfQ.yay4soy5wpalBfRqm2brLzX527EqhgVx4jVVjByJCnU
+@couponId = 1
+@couponCode = ABC123
+
+### --------------------------------------------
+### USER - Get available coupons (requires login)
+### --------------------------------------------
+GET {{host}}/api/coupons/available
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### --------------------------------------------
+### USER - Validate coupon (requires login)
+### Body: code, subtotal (number)
+### --------------------------------------------
+POST {{host}}/api/coupons/validate
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "SPRING25",
+  "subtotal": 250000
+}
+
+### --------------------------------------------
+### ADMIN - List coupons (pagination + filters optional)
+### Params: page, limit, is_active, search
+### --------------------------------------------
+GET {{host}}/api/coupons?page=1&limit=20&is_active=true&search=
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### --------------------------------------------
+### ADMIN - Create coupon
+### Required: code, name, type, value, starts_at, expires_at
+### type: "percentage" | "fixed"
+### --------------------------------------------
+POST {{host}}/api/coupons
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "code": "SPRING25",
+  "name": "Spring Sale 25%",
+  "description": "Giảm 25% tối đa 100k",
+  "type": "percentage",
+  "value": 25,
+  "minimum_amount": 200000,
+  "maximum_discount": 100000,
+  "usage_limit": 1000,
+  "is_active": true,
+  "starts_at": "2025-03-01T00:00:00.000Z",
+  "expires_at": "2026-06-01T00:00:00.000Z"
+}
+
+### --------------------------------------------
+### ADMIN - Get coupon by ID
+### --------------------------------------------
+GET {{host}}/api/coupons/{{couponId}}
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### --------------------------------------------
+### ADMIN - Update coupon
+### Only include fields you want to change
+### --------------------------------------------
+PUT {{host}}/api/coupons/{{couponId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Spring Sale 30%",
+  "value": 30,
+  "maximum_discount": 150000,
+  "is_active": true
+}
+
+### --------------------------------------------
+### ADMIN - Delete coupon
+### If coupon has usage history, it will be soft-disabled
+### --------------------------------------------
+DELETE {{host}}/api/coupons/{{couponId}}
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+

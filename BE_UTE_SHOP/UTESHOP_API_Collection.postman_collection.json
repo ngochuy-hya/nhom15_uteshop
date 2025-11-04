@@ -1,0 +1,812 @@
+{
+	"info": {
+		"_postman_id": "uteshop-api-collection",
+		"name": "UTESHOP API - Coupons & Products",
+		"description": "Postman collection để test API Coupons và Products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000/api",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token - lấy từ API login"
+		},
+		{
+			"key": "coupon_id",
+			"value": "",
+			"type": "string",
+			"description": "ID của coupon để test"
+		},
+		{
+			"key": "product_id",
+			"value": "",
+			"type": "string",
+			"description": "ID của product để test"
+		}
+	],
+	"item": [
+		{
+			"name": "Coupons",
+			"item": [
+				{
+					"name": "User - Get Available Coupons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/coupons/available",
+							"host": ["{{base_url}}"],
+							"path": ["coupons", "available"]
+						},
+						"description": "Lấy danh sách coupon khả dụng cho user (cần auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "User - Validate Coupon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SAVE20\",\n  \"subtotal\": 1000000\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/coupons/validate",
+							"host": ["{{base_url}}"],
+							"path": ["coupons", "validate"]
+						},
+						"description": "Validate coupon code khi checkout (cần auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Get All Coupons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/coupons?page=1&limit=20&is_active=true&search=",
+							"host": ["{{base_url}}"],
+							"path": ["coupons"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "is_active",
+									"value": "true"
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						},
+						"description": "Lấy danh sách tất cả coupons (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Get Coupon By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/coupons/{{coupon_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["coupons", "{{coupon_id}}"]
+						},
+						"description": "Lấy chi tiết coupon theo ID (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Create Coupon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SAVE20\",\n  \"name\": \"Giảm giá 20%\",\n  \"description\": \"Áp dụng cho đơn hàng từ 500.000đ\",\n  \"type\": \"percentage\",\n  \"value\": 20,\n  \"minimum_amount\": 500000,\n  \"maximum_discount\": 100000,\n  \"usage_limit\": 100,\n  \"is_active\": true,\n  \"starts_at\": \"2024-01-01T00:00:00Z\",\n  \"expires_at\": \"2024-12-31T23:59:59Z\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/coupons",
+							"host": ["{{base_url}}"],
+							"path": ["coupons"]
+						},
+						"description": "Tạo coupon mới (Admin only)\n\n**Các trường bắt buộc:**\n- code: Mã coupon (unique)\n- name: Tên coupon\n- type: 'percentage' hoặc 'fixed'\n- value: Giá trị giảm giá\n- starts_at: Thời gian bắt đầu (ISO 8601)\n- expires_at: Thời gian kết thúc (ISO 8601)\n\n**Các trường tùy chọn:**\n- description: Mô tả\n- minimum_amount: Số tiền tối thiểu để áp dụng (mặc định: 0)\n- maximum_discount: Giảm giá tối đa (chỉ áp dụng với type='percentage')\n- usage_limit: Giới hạn số lần sử dụng\n- is_active: Trạng thái active (mặc định: true)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Update Coupon",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Giảm giá 25% (Updated)\",\n  \"description\": \"Cập nhật mô tả\",\n  \"value\": 25,\n  \"maximum_discount\": 150000,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/coupons/{{coupon_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["coupons", "{{coupon_id}}"]
+						},
+						"description": "Cập nhật coupon (Admin only)\n\nCó thể cập nhật các trường:\n- code, name, description\n- type, value\n- minimum_amount, maximum_discount\n- usage_limit\n- is_active\n- starts_at, expires_at"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Delete Coupon",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/coupons/{{coupon_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["coupons", "{{coupon_id}}"]
+						},
+						"description": "Xóa coupon (Admin only)\n\n- Nếu coupon đã có lịch sử sử dụng: soft delete (set is_active = 0)\n- Nếu chưa có lịch sử: hard delete"
+					},
+					"response": []
+				}
+			],
+			"description": "API endpoints cho Coupons"
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Public",
+					"item": [
+						{
+							"name": "Get All Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products?page=1&limit=12&sort_by=created_at&sort_order=DESC",
+									"host": ["{{base_url}}"],
+									"path": ["products"],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "12"
+										},
+										{
+											"key": "category_id",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "brand_id",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "search",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "sort_by",
+											"value": "created_at"
+										},
+										{
+											"key": "sort_order",
+											"value": "DESC"
+										},
+										{
+											"key": "min_price",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "max_price",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "is_featured",
+											"value": "",
+											"disabled": true
+										},
+										{
+											"key": "is_new",
+											"value": "",
+											"disabled": true
+										}
+									]
+								},
+								"description": "Lấy danh sách sản phẩm với filter và pagination"
+							},
+							"response": []
+						},
+						{
+							"name": "Get New Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/new?limit=12&days=30",
+									"host": ["{{base_url}}"],
+									"path": ["products", "new"],
+									"query": [
+										{
+											"key": "limit",
+											"value": "12"
+										},
+										{
+											"key": "days",
+											"value": "30"
+										}
+									]
+								},
+								"description": "Lấy danh sách sản phẩm mới"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Featured Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/featured?limit=12",
+									"host": ["{{base_url}}"],
+									"path": ["products", "featured"],
+									"query": [
+										{
+											"key": "limit",
+											"value": "12"
+										}
+									]
+								},
+								"description": "Lấy danh sách sản phẩm nổi bật"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Best Seller Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/bestseller?limit=12",
+									"host": ["{{base_url}}"],
+									"path": ["products", "bestseller"],
+									"query": [
+										{
+											"key": "limit",
+											"value": "12"
+										}
+									]
+								},
+								"description": "Lấy danh sách sản phẩm bán chạy"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Product By ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["products", "{{product_id}}"]
+								},
+								"description": "Lấy chi tiết sản phẩm (bao gồm images, attributes, reviews)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get Related Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}/related?limit=4",
+									"host": ["{{base_url}}"],
+									"path": ["products", "{{product_id}}", "related"],
+									"query": [
+										{
+											"key": "limit",
+											"value": "4"
+										}
+									]
+								},
+								"description": "Lấy danh sách sản phẩm liên quan"
+							},
+							"response": []
+						}
+					],
+					"description": "Public endpoints - không cần authentication"
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Get Product By ID (Admin)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/admin/{{product_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["products", "admin", "{{product_id}}"]
+								},
+								"description": "Lấy chi tiết sản phẩm cho admin (bao gồm cả inactive items)"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Áo thun nam cao cấp\",\n  \"slug\": \"ao-thun-nam-cao-cap\",\n  \"description\": \"Mô tả chi tiết sản phẩm\",\n  \"short_description\": \"Mô tả ngắn\",\n  \"sku\": \"PROD001\",\n  \"price\": 500000,\n  \"sale_price\": 400000,\n  \"stock_quantity\": 100,\n  \"category_id\": 1,\n  \"brand_id\": 1,\n  \"is_featured\": true,\n  \"is_trending\": false,\n  \"is_bestseller\": false,\n  \"is_new\": true,\n  \"is_sale\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/products",
+									"host": ["{{base_url}}"],
+									"path": ["products"]
+								},
+								"description": "Tạo sản phẩm mới (Admin only) - Sử dụng JSON với image_url"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product With Images (Form-Data)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Áo thun nam cao cấp",
+											"type": "text"
+										},
+										{
+											"key": "slug",
+											"value": "ao-thun-nam-cao-cap-2",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Mô tả chi tiết sản phẩm",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "500000",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "images",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/products/with-images",
+									"host": ["{{base_url}}"],
+									"path": ["products", "with-images"]
+								},
+								"description": "Tạo sản phẩm mới với upload ảnh từ máy tính (Form-Data) - Admin only"
+							},
+							"response": []
+						},
+						{
+							"name": "Update Product",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Áo thun nam cao cấp (Updated)\",\n  \"price\": 550000,\n  \"sale_price\": 450000,\n  \"stock_quantity\": 150,\n  \"is_featured\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["products", "{{product_id}}"]
+								},
+								"description": "Cập nhật sản phẩm (Admin only)"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["products", "{{product_id}}"]
+								},
+								"description": "Xóa sản phẩm (soft delete - set is_active = 0) - Admin only"
+							},
+							"response": []
+						},
+						{
+							"name": "Product Attributes",
+							"item": [
+								{
+									"name": "Add Product Attribute",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{auth_token}}",
+												"type": "text"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"attribute_type\": \"color\",\n  \"attribute_name\": \"Color\",\n  \"attribute_value\": \"Red\",\n  \"price_adjustment\": 0,\n  \"stock_quantity\": 50,\n  \"is_active\": true\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/products/{{product_id}}/attributes",
+											"host": ["{{base_url}}"],
+											"path": ["products", "{{product_id}}", "attributes"]
+										},
+										"description": "Thêm thuộc tính cho sản phẩm (color, size, material, style) - Admin only"
+									},
+									"response": []
+								},
+								{
+									"name": "Update Product Attribute",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{auth_token}}",
+												"type": "text"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"attribute_value\": \"Blue\",\n  \"stock_quantity\": 60,\n  \"is_active\": true\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/products/{{product_id}}/attributes/:attrId",
+											"host": ["{{base_url}}"],
+											"path": ["products", "{{product_id}}", "attributes", ":attrId"]
+										},
+										"description": "Cập nhật thuộc tính sản phẩm - Admin only\n\nThay :attrId bằng ID của attribute cần cập nhật"
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Product Attribute",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer {{auth_token}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{base_url}}/products/{{product_id}}/attributes/:attrId",
+											"host": ["{{base_url}}"],
+											"path": ["products", "{{product_id}}", "attributes", ":attrId"]
+										},
+										"description": "Xóa thuộc tính sản phẩm - Admin only\n\nThay :attrId bằng ID của attribute cần xóa"
+									},
+									"response": []
+								}
+							],
+							"description": "Quản lý thuộc tính sản phẩm (Admin only)"
+						},
+						{
+							"name": "Delete Product Image",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{auth_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/products/{{product_id}}/images/:imageId",
+									"host": ["{{base_url}}"],
+									"path": ["products", "{{product_id}}", "images", ":imageId"]
+								},
+								"description": "Xóa ảnh sản phẩm - Admin only\n\nThay :imageId bằng ID của ảnh cần xóa"
+							},
+							"response": []
+						}
+					],
+					"description": "Admin endpoints - cần authentication và admin role"
+				}
+			],
+			"description": "API endpoints cho Products"
+		},
+		{
+			"name": "Product Attributes (Standalone)",
+			"item": [
+				{
+					"name": "Get Product Attributes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product-attributes/product/{{product_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "product", "{{product_id}}"]
+						},
+						"description": "Lấy tất cả attributes của một product (chỉ trả về active)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product Attributes By Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product-attributes/product/{{product_id}}/type/color",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "product", "{{product_id}}", "type", "color"]
+						},
+						"description": "Lấy attributes theo type (color, size, material, style)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product Attribute By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/product-attributes/product/{{product_id}}/:attributeId",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "product", "{{product_id}}", ":attributeId"]
+						},
+						"description": "Lấy một attribute theo ID\n\nThay :attributeId bằng ID của attribute"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Get All Product Attributes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/product-attributes/admin/product/{{product_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "admin", "product", "{{product_id}}"]
+						},
+						"description": "Lấy tất cả attributes (bao gồm cả inactive) - Admin only"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Create Product Attribute",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"attribute_type\": \"size\",\n  \"attribute_name\": \"Size\",\n  \"attribute_value\": \"L\",\n  \"price_adjustment\": 0,\n  \"stock_quantity\": 30,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/product-attributes/product/{{product_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "product", "{{product_id}}"]
+						},
+						"description": "Tạo attribute mới cho product - Admin only"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Update Product Attribute",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"attribute_value\": \"XL\",\n  \"stock_quantity\": 40,\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/product-attributes/product/{{product_id}}/:attributeId",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "product", "{{product_id}}", ":attributeId"]
+						},
+						"description": "Cập nhật attribute - Admin only\n\nThay :attributeId bằng ID của attribute cần cập nhật"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin - Delete Product Attribute",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/product-attributes/product/{{product_id}}/:attributeId",
+							"host": ["{{base_url}}"],
+							"path": ["product-attributes", "product", "{{product_id}}", ":attributeId"]
+						},
+						"description": "Xóa attribute - Admin only\n\nThay :attributeId bằng ID của attribute cần xóa"
+					},
+					"response": []
+				}
+			],
+			"description": "Standalone API endpoints cho Product Attributes"
+		}
+	]
+}

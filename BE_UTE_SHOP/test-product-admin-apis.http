@@ -1,0 +1,901 @@
+### ============================================
+### PRODUCT ADMIN APIs - Test với Cloudinary Upload
+### ============================================
+
+@baseUrl = http://localhost:5000/api
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoiYWRtaW5AdXRlc2hvcC5jb20iLCJyb2xlSWQiOjIsImlhdCI6MTc2MTk4MzIxNiwiZXhwIjoxNzYyNTg4MDE2fQ.SwW2saR1CLrejTZ-Bp-YoMR7QSTur-zwxlRyK5bLvuM
+
+### ============================================
+### 1. UPLOAD IMAGES (Cloudinary)
+### ============================================
+
+### Upload 1 ảnh
+POST {{baseUrl}}/upload/image
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="product-main.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-main.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="folder"
+
+products
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+
+###
+
+### Upload nhiều ảnh cùng lúc
+POST {{baseUrl}}/upload/images
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="product-1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-1.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="product-2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-2.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="product-3.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-3.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="folder"
+
+products
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+
+###
+
+### ============================================
+### 2. CREATE PRODUCT với nhiều ảnh (ảnh chính + phụ)
+### ============================================
+
+### Tạo sản phẩm với upload ảnh từ LOCAL (Form-Data) - TỰ ĐỘNG UPLOAD LÊN CLOUDINARY
+POST {{baseUrl}}/products/with-images
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Áo Thun Nike Dri-FIT Premium
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="slug"
+
+ao-thun-nike-dri-fit-premium-formdata
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="description"
+
+<p>Áo thun Nike Dri-FIT công nghệ cao, thoáng khí, nhanh khô. Chất liệu polyester 100%, co giãn tốt.</p>
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="short_description"
+
+Áo thun Nike Dri-FIT công nghệ cao
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="sku"
+
+NIKE-DRIFIT-FORMDATA-001
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+599000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="sale_price"
+
+449000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="cost_price"
+
+300000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category_id"
+
+1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="gender"
+
+unisex
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="season"
+
+all
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="brand_id"
+
+1
+# Lưu ý: brand_id là optional, có thể để trống hoặc truyền số ID của brand
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="is_featured"
+
+true
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="is_trending"
+
+true
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="is_new"
+
+true
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="is_sale"
+
+true
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="primary_image_index"
+
+0
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="product-main.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-main.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="product-2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-2.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="product-3.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/product-3.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+
+###
+
+### Tạo sản phẩm với form-data (chỉ ảnh, không có attributes)
+POST {{baseUrl}}/products/with-images
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Quần Jean Zara Classic
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+890000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category_id"
+
+2
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="jean-main.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/jean-main.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+
+###
+
+### Tạo sản phẩm với form-data và attributes (JSON string)
+POST {{baseUrl}}/products/with-images
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="name"
+
+Váy Đầm Hè Zara 2024
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="price"
+
+1290000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="sale_price"
+
+999000
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="category_id"
+
+3
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="gender"
+
+female
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="brand_id"
+
+2
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="attributes"
+
+[{"attribute_type":"size","attribute_name":"Size","attribute_value":"S","price_adjustment":0,"stock_quantity":30,"is_active":true},{"attribute_type":"size","attribute_name":"Size","attribute_value":"M","price_adjustment":0,"stock_quantity":50,"is_active":true}]
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="dress-main.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/dress-main.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="dress-side.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/dress-side.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+
+###
+
+### Tạo sản phẩm mới với nhiều ảnh (ảnh chính và phụ)
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo Thun Nike Dri-FIT Premium",
+  "slug": "ao-thun-nike-dri-fit-premium",
+  "description": "<p>Áo thun Nike Dri-FIT công nghệ cao, thoáng khí, nhanh khô. Chất liệu polyester 100%, co giãn tốt, thấm hút mồ hôi hiệu quả. Thiết kế hiện đại, phù hợp cho thể thao và mặc hàng ngày.</p>",
+  "short_description": "Áo thun Nike Dri-FIT công nghệ cao, thoáng khí, nhanh khô",
+  "sku": "NIKE-DRIFIT-001",
+  "price": 599000,
+  "sale_price": 449000,
+  "cost_price": 300000,
+  "category_id": 1,
+  "gender": "unisex",
+  "season": "all",
+  "brand_id": 1,
+  "is_featured": true,
+  "is_trending": true,
+  "is_bestseller": false,
+  "is_new": true,
+  "is_sale": true,
+  "images": [
+    {
+      "image_url": "https://th.bing.com/th/id/OIP.cUlELKje02FF9ktQpRggxgHaLH?w=124&h=186&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
+      "is_primary": true,
+      "sort_order": 1
+    },
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-2-456.jpg",
+      "is_primary": false,
+      "sort_order": 2
+    },
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-3-789.jpg",
+      "is_primary": false,
+      "sort_order": 3
+    },
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-4-012.jpg",
+      "is_primary": false,
+      "sort_order": 4
+    }
+  ],
+  "attributes": [
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "S",
+      "price_adjustment": 0,
+      "stock_quantity": 50,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "M",
+      "price_adjustment": 0,
+      "stock_quantity": 80,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "L",
+      "price_adjustment": 0,
+      "stock_quantity": 60,
+      "is_active": true
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Color",
+      "attribute_value": "Đen",
+      "price_adjustment": 0,
+      "stock_quantity": 100,
+      "is_active": true
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Color",
+      "attribute_value": "Trắng",
+      "price_adjustment": 0,
+      "stock_quantity": 90,
+      "is_active": true
+    }
+  ]
+}
+
+###
+
+### Tạo sản phẩm mới chỉ với thông tin cơ bản (không có ảnh, attributes)
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Quần Jean Zara Classic",
+  "slug": "quan-jean-zara-classic",
+  "description": "<p>Quần jean Zara classic fit, chất liệu denim cao cấp, form dáng ôm vừa phải. Phù hợp cho cả nam và nữ, dễ phối đồ.</p>",
+  "short_description": "Quần jean Zara classic fit, chất liệu denim cao cấp",
+  "sku": "ZARA-JEAN-001",
+  "price": 890000,
+  "sale_price": null,
+  "cost_price": 500000,
+  "category_id": 2,
+  "gender": "unisex",
+  "season": "all",
+  "brand_id": 2,
+  "is_featured": false,
+  "is_trending": false,
+  "is_bestseller": false,
+  "is_new": true,
+  "is_sale": false
+}
+
+###
+
+### ============================================
+### 3. GET PRODUCT (Admin) - Lấy với TẤT CẢ attributes và images
+### ============================================
+
+### Lấy chi tiết product cho admin (không filter is_active)
+GET {{baseUrl}}/products/admin/1
+Authorization: Bearer {{adminToken}}
+
+###
+
+### Lấy chi tiết product cho user (chỉ active)
+GET {{baseUrl}}/products/1
+
+###
+
+### ============================================
+### 4. UPDATE PRODUCT với nhiều ảnh
+### ============================================
+
+### Update product với thêm ảnh mới
+PUT {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo Thun Nike Dri-FIT Premium (Updated)",
+  "description": "<p>Áo thun Nike Dri-FIT công nghệ cao, THÊM THÔNG TIN MỚI. Chất liệu polyester 100%, co giãn tốt.</p>",
+  "sale_price": 399000,
+  "images": [
+    {
+      "id": 1,
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-main-123.jpg",
+      "is_primary": true,
+      "sort_order": 1
+    },
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-new-999.jpg",
+      "is_primary": false,
+      "sort_order": 5
+    }
+  ],
+  "attributes": [
+    {
+      "id": 1,
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "S",
+      "price_adjustment": 0,
+      "stock_quantity": 60,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "XL",
+      "price_adjustment": 50000,
+      "stock_quantity": 40,
+      "is_active": true
+    }
+  ]
+}
+
+###
+
+### Update product chỉ một số trường
+PUT {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "price": 649000,
+  "is_featured": false,
+  "is_active": true
+}
+
+###
+
+### ============================================
+### 5. UPLOAD IMAGES cho product đã tồn tại
+### ============================================
+
+### Upload thêm ảnh cho product đã tồn tại
+POST {{baseUrl}}/products/1/images
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "images": [
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-detail-1.jpg",
+      "is_primary": false,
+      "sort_order": 10
+    },
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-detail-2.jpg",
+      "is_primary": false,
+      "sort_order": 11
+    }
+  ]
+}
+
+###
+
+### ============================================
+### 6. DELETE PRODUCT IMAGE
+### ============================================
+
+### Xóa ảnh sản phẩm
+DELETE {{baseUrl}}/products/1/images/5
+Authorization: Bearer {{adminToken}}
+
+###
+
+### ============================================
+### 7. DELETE PRODUCT
+### ============================================
+
+### Xóa sản phẩm (soft delete - set is_active = 0)
+DELETE {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+
+###
+
+### ============================================
+### WORKFLOW TEST: Tạo product từ đầu với upload ảnh
+### ============================================
+
+### Bước 1: Upload nhiều ảnh lên Cloudinary
+POST {{baseUrl}}/upload/images
+Authorization: Bearer {{adminToken}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="main.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/main.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="side-1.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/side-1.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="images"; filename="side-2.jpg"
+Content-Type: image/jpeg
+
+< ./test-images/side-2.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="folder"
+
+products
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+
+### 
+# Response sẽ trả về:
+# {
+#   "success": true,
+#   "message": "Upload 3 ảnh thành công",
+#   "data": [
+#     {
+#       "url": "https://res.cloudinary.com/...",
+#       "public_id": "...",
+#       "secure_url": "https://res.cloudinary.com/..."
+#     },
+#     ...
+#   ]
+# }
+#
+# Sau đó copy các secure_url và dùng trong Bước 2
+###
+
+### Bước 2: Tạo product với các URL ảnh từ Bước 1
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Váy Đầm Hè Zara 2024",
+  "slug": "vay-dam-he-zara-2024",
+  "description": "<p>Váy đầm hè Zara thiết kế mới 2024, chất liệu cotton mềm mại, thoáng khí. Màu sắc tươi sáng, phù hợp cho mùa hè.</p>",
+  "short_description": "Váy đầm hè Zara thiết kế mới 2024",
+  "sku": "ZARA-DRESS-2024-001",
+  "price": 1290000,
+  "sale_price": 999000,
+  "cost_price": 600000,
+  "category_id": 3,
+  "gender": "female",
+  "season": "summer",
+  "brand_id": 2,
+  "is_featured": true,
+  "is_trending": true,
+  "is_bestseller": false,
+  "is_new": true,
+  "is_sale": true,
+  "images": [
+    {
+      "image_url": "PASTE_SECURE_URL_FROM_STEP_1_HERE_1",
+      "is_primary": true,
+      "sort_order": 1
+    },
+    {
+      "image_url": "PASTE_SECURE_URL_FROM_STEP_1_HERE_2",
+      "is_primary": false,
+      "sort_order": 2
+    },
+    {
+      "image_url": "PASTE_SECURE_URL_FROM_STEP_1_HERE_3",
+      "is_primary": false,
+      "sort_order": 3
+    }
+  ],
+  "attributes": [
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "S",
+      "price_adjustment": 0,
+      "stock_quantity": 30,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "M",
+      "price_adjustment": 0,
+      "stock_quantity": 50,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "L",
+      "price_adjustment": 0,
+      "stock_quantity": 25,
+      "is_active": true
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Color",
+      "attribute_value": "Hồng",
+      "price_adjustment": 0,
+      "stock_quantity": 40,
+      "is_active": true
+    },
+    {
+      "attribute_type": "color",
+      "attribute_name": "Color",
+      "attribute_value": "Xanh",
+      "price_adjustment": 0,
+      "stock_quantity": 35,
+      "is_active": true
+    }
+  ]
+}
+
+###
+
+### Bước 3: Kiểm tra product đã tạo (Admin view)
+GET {{baseUrl}}/products/admin/PASTE_PRODUCT_ID_FROM_STEP_2
+Authorization: Bearer {{adminToken}}
+
+###
+
+### ============================================
+### TEST CASES - Edge Cases
+### ============================================
+
+### Test: Tạo product với 1 ảnh chính, không có ảnh phụ
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sản phẩm chỉ có ảnh chính",
+  "slug": "san-pham-chi-co-anh-chinh",
+  "description": "Test product với chỉ 1 ảnh chính",
+  "short_description": "Test product",
+  "sku": "TEST-001",
+  "price": 100000,
+  "category_id": 1,
+  "images": [
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/test-main.jpg",
+      "is_primary": true,
+      "sort_order": 1
+    }
+  ]
+}
+
+###
+
+### Test: Tạo product với nhiều ảnh, nhưng không có ảnh primary (sẽ không set primary nào)
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Sản phẩm không có ảnh primary",
+  "slug": "san-pham-khong-co-anh-primary",
+  "description": "Test product không có ảnh primary",
+  "short_description": "Test product",
+  "sku": "TEST-002",
+  "price": 100000,
+  "category_id": 1,
+  "images": [
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/test-1.jpg",
+      "is_primary": false,
+      "sort_order": 1
+    },
+    {
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/test-2.jpg",
+      "is_primary": false,
+      "sort_order": 2
+    }
+  ]
+}
+
+###
+
+### Test: Update product - thay đổi ảnh primary
+PUT {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "images": [
+    {
+      "id": 1,
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-main-123.jpg",
+      "is_primary": false,
+      "sort_order": 1
+    },
+    {
+      "id": 2,
+      "image_url": "https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-2-456.jpg",
+      "is_primary": true,
+      "sort_order": 2
+    }
+  ]
+}
+
+###
+
+### ============================================
+### 8. PRODUCT ATTRIBUTES - Thêm attributes sau khi tạo product
+### ============================================
+
+### Thêm 1 attribute cho product đã tồn tại
+POST {{baseUrl}}/products/1/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Size",
+  "attribute_value": "XL",
+  "price_adjustment": 50000,
+  "stock_quantity": 40,
+  "is_active": true
+}
+
+###
+
+### Thêm attribute loại color
+POST {{baseUrl}}/products/1/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "color",
+  "attribute_name": "Color",
+  "attribute_value": "Xanh dương",
+  "price_adjustment": 0,
+  "stock_quantity": 25,
+  "is_active": true
+}
+
+###
+
+### Thêm nhiều attributes cùng lúc (gọi API nhiều lần)
+# Lưu ý: API hiện tại chỉ thêm 1 attribute mỗi lần
+# Để thêm nhiều attributes, gọi API nhiều lần hoặc dùng updateProduct với mảng attributes
+
+### Workflow: Tạo product trước, sau đó thêm attributes
+
+### Bước 1: Tạo product không có attributes
+POST {{baseUrl}}/products
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Áo Thun Uniqlo Basic",
+  "slug": "ao-thun-uniqlo-basic",
+  "description": "<p>Áo thun Uniqlo basic, chất liệu cotton 100%, thoáng mát.</p>",
+  "short_description": "Áo thun Uniqlo basic",
+  "sku": "UNIQLO-BASIC-001",
+  "price": 299000,
+  "sale_price": null,
+  "cost_price": 150000,
+  "category_id": 1,
+  "gender": "unisex",
+  "season": "all",
+  "brand_id": 3,
+  "is_featured": false,
+  "is_trending": false,
+  "is_bestseller": false,
+  "is_new": true,
+  "is_sale": false
+}
+
+###
+
+### Bước 2: Thêm attributes sau khi tạo product (lấy product_id từ Bước 1)
+
+### Thêm size S
+POST {{baseUrl}}/products/PASTE_PRODUCT_ID_HERE/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Size",
+  "attribute_value": "S",
+  "price_adjustment": 0,
+  "stock_quantity": 30,
+  "is_active": true
+}
+
+###
+
+### Thêm size M
+POST {{baseUrl}}/products/PASTE_PRODUCT_ID_HERE/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Size",
+  "attribute_value": "M",
+  "price_adjustment": 0,
+  "stock_quantity": 50,
+  "is_active": true
+}
+
+###
+
+### Thêm size L
+POST {{baseUrl}}/products/PASTE_PRODUCT_ID_HERE/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Size",
+  "attribute_value": "L",
+  "price_adjustment": 0,
+  "stock_quantity": 40,
+  "is_active": true
+}
+
+###
+
+### Thêm color Đen
+POST {{baseUrl}}/products/PASTE_PRODUCT_ID_HERE/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "color",
+  "attribute_name": "Color",
+  "attribute_value": "Đen",
+  "price_adjustment": 0,
+  "stock_quantity": 60,
+  "is_active": true
+}
+
+###
+
+### Thêm color Trắng
+POST {{baseUrl}}/products/PASTE_PRODUCT_ID_HERE/attributes
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "color",
+  "attribute_name": "Color",
+  "attribute_value": "Trắng",
+  "price_adjustment": 0,
+  "stock_quantity": 50,
+  "is_active": true
+}
+
+###
+
+### Bước 3: Kiểm tra product với tất cả attributes đã thêm
+GET {{baseUrl}}/products/admin/PASTE_PRODUCT_ID_HERE
+Authorization: Bearer {{adminToken}}
+
+###
+
+### ============================================
+### 9. UPDATE & DELETE ATTRIBUTES
+### ============================================
+
+### Update attribute (thay đổi stock_quantity, price_adjustment, etc.)
+PUT {{baseUrl}}/products/1/attributes/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attribute_type": "size",
+  "attribute_name": "Size",
+  "attribute_value": "S",
+  "price_adjustment": 0,
+  "stock_quantity": 100,
+  "is_active": true
+}
+
+###
+
+### Delete attribute (xóa attribute)
+DELETE {{baseUrl}}/products/1/attributes/1
+Authorization: Bearer {{adminToken}}
+
+###
+
+### Hoặc có thể dùng updateProduct để thêm nhiều attributes cùng lúc
+PUT {{baseUrl}}/products/1
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "attributes": [
+    {
+      "id": 1,
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "S",
+      "price_adjustment": 0,
+      "stock_quantity": 60,
+      "is_active": true
+    },
+    {
+      "attribute_type": "size",
+      "attribute_name": "Size",
+      "attribute_value": "XXL",
+      "price_adjustment": 100000,
+      "stock_quantity": 20,
+      "is_active": true
+    }
+  ]
+}
+
+###
+

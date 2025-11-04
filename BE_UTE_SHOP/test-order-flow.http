@@ -1,0 +1,623 @@
+### ============================================
+### 🛒 QUY TRÌNH ĐẶT HÀNG HOÀN CHỈNH
+### ============================================
+### 
+### Flow: Thêm vào giỏ hàng → Xem giỏ hàng → Tạo đơn hàng → Thanh toán → Kiểm tra trạng thái
+###
+### Hướng dẫn sử dụng:
+### 1. Thay {{userToken}} bằng token của bạn (lấy từ login)
+### 2. Thay {{productId}} bằng ID sản phẩm thực tế trong DB
+### 3. Thay {{orderId}} bằng ID đơn hàng sau khi tạo
+### 4. Thay {{orderCode}} bằng PayOS order code sau khi tạo payment
+###
+### ============================================
+
+### Variables
+@baseUrl = http://localhost:5000/api
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImVtYWlsIjoibmd1eWVuaHV5cG0xQGdtYWlsLmNvbSIsInJvbGVJZCI6MSwiaWF0IjoxNzYxOTY5NDAzLCJleHAiOjE3NjI1NzQyMDN9.AkmseFTAzsuT3bvOsMPn_XSzt1HAxvIHgtxLo9-QC-4
+@productId1 = 1
+@productId2 = 2
+@orderId = 5
+@orderCode = 123456789
+@cartItemId = 1
+
+### ============================================
+### BƯỚC 1: ĐĂNG NHẬP (Nếu chưa có token)
+### ============================================
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "nguyenhuypm1@gmail.com",
+  "password": "123456"
+}
+
+###
+### → Lưu token từ response vào {{userToken}}
+###
+
+### ============================================
+### BƯỚC 2: XEM GIỎ HÀNG HIỆN TẠI
+### ============================================
+
+GET {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy giỏ hàng thành công",
+###   "data": {
+###     "items": [
+###       {
+###         "id": 1,
+###         "product_id": 1,
+###         "product_name": "Áo thun nam",
+###         "quantity": 2,
+###         "price": 200000,
+###         "total": 400000,
+###         "selected_color": "Đỏ",
+###         "selected_size": "L"
+###       }
+###     ],
+###     "total": 400000,
+###     "item_count": 1
+###   }
+### }
+###
+
+### ============================================
+### BƯỚC 3: THÊM SẢN PHẨM VÀO GIỎ HÀNG (Lần 1)
+### ============================================
+
+POST {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "product_id": {{productId1}},
+  "quantity": 2,
+  "selected_color": "Đỏ",
+  "selected_size": "L"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Thêm vào giỏ hàng thành công"
+### }
+###
+### ❌ Lỗi nếu:
+### - Sản phẩm không tồn tại: 404
+### - Số lượng vượt quá tồn kho: 400
+### - Thiếu product_id hoặc quantity: 400
+###
+
+### ============================================
+### BƯỚC 4: THÊM SẢN PHẨM VÀO GIỎ HÀNG (Lần 2)
+### ============================================
+
+POST {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "product_id": {{productId2}},
+  "quantity": 1,
+  "selected_color": "Xanh",
+  "selected_size": "M"
+}
+
+###
+### → Thêm sản phẩm thứ 2 vào giỏ hàng
+###
+
+### ============================================
+### BƯỚC 5: XEM GIỎ HÀNG SAU KHI THÊM
+### ============================================
+
+GET {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### → Xem tất cả sản phẩm trong giỏ hàng
+### → Ghi nhận cart_item_id để cập nhật sau
+###
+
+### ============================================
+### BƯỚC 6: CẬP NHẬT SỐ LƯỢNG SẢN PHẨM
+### ============================================
+
+PUT {{baseUrl}}/cart/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "quantity": 3
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Cập nhật giỏ hàng thành công"
+### }
+###
+
+### ============================================
+### BƯỚC 7: XÓA SẢN PHẨM KHỎI GIỎ HÀNG (Optional)
+### ============================================
+
+DELETE {{baseUrl}}/cart/{{cartItemId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Xóa sản phẩm khỏi giỏ hàng thành công"
+### }
+###
+
+### ============================================
+### BƯỚC 8: XÓA TẤT CẢ GIỎ HÀNG (Optional)
+### ============================================
+
+DELETE {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Xóa tất cả sản phẩm trong giỏ hàng thành công"
+### }
+###
+
+### ============================================
+### BƯỚC 9: THÊM LẠI SẢN PHẨM ĐỂ TẠO ĐƠN HÀNG
+### ============================================
+
+POST {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "product_id": {{productId1}},
+  "quantity": 2,
+  "selected_color": "Đỏ",
+  "selected_size": "L"
+}
+
+###
+### → Thêm lại sản phẩm để có đủ trong giỏ hàng
+###
+
+### ============================================
+### BƯỚC 10: XEM GIỎ HÀNG LẦN CUỐI
+### ============================================
+
+GET {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### → Kiểm tra lại giỏ hàng trước khi đặt hàng
+### → Lưu thông tin: product_id, quantity, selected_color, selected_size
+###
+
+### ============================================
+### BƯỚC 11: TẠO ĐƠN HÀNG
+### ============================================
+
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "items": [
+    {
+      "product_id": {{productId1}},
+      "quantity": 2,
+      "selected_color": "Đỏ",
+      "selected_size": "L"
+    },
+    {
+      "product_id": {{productId2}},
+      "quantity": 1,
+      "selected_color": "Xanh",
+      "selected_size": "M"
+    }
+  ],
+  "shipping_address": {
+    "full_name": "Nguyễn Ngọc Huy",
+    "phone": "0327793283",
+    "address": "123 Đường ABC",
+    "ward": "Phường 1",
+    "district": "Quận 1",
+    "city": "Hồ Chí Minh",
+    "postal_code": "70000"
+  },
+  "billing_address": {
+    "full_name": "Nguyễn Ngọc Huy",
+    "phone": "0327793283",
+    "address": "123 Đường ABC",
+    "ward": "Phường 1",
+    "district": "Quận 1",
+    "city": "Hồ Chí Minh",
+    "postal_code": "70000"
+  },
+  "payment_method": "payos",
+  "notes": "Giao hàng trong giờ hành chính",
+  "coupon_code": ""
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Tạo đơn hàng thành công",
+###   "data": {
+###     "id": 1,
+###     "order_number": "UTE-2024-000001",
+###     "user_id": 7,
+###     "status_id": 1,
+###     "subtotal": 400000,
+###     "tax_amount": 40000,
+###     "shipping_amount": 50000,
+###     "discount_amount": 0,
+###     "total_amount": 490000,
+###     "payment_method": "payos",
+###     "payment_status": "pending",
+###     "items": [
+###       {
+###         "id": 1,
+###         "product_id": 1,
+###         "product_name": "Áo thun nam",
+###         "quantity": 2,
+###         "unit_price": 200000,
+###         "total_price": 400000
+###       }
+###     ],
+###     "created_at": "2024-11-01T10:30:00Z"
+###   }
+### }
+###
+### → Lưu order_id từ response để dùng cho bước tiếp theo
+###
+### ❌ Lỗi nếu:
+### - Sản phẩm không tồn tại: 400
+### - Số lượng vượt quá tồn kho: 400
+### - Thiếu địa chỉ giao hàng/thanh toán: 400
+###
+
+### ============================================
+### BƯỚC 12: TẠO PAYMENT LINK (PayOS)
+### ============================================
+
+POST {{baseUrl}}/payment/payos/create
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": {{orderId}},
+  "description": "Thanh toán đơn hàng #UTE-2025-000005"
+}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Tạo payment link thành công",
+###   "data": {
+###     "payment_link": "https://pay.payos.vn/web/...",
+###     "order_code": 123456789,
+###     "qr_code": "https://img.vietqr.io/image/..."
+###   }
+### }
+###
+### → Mở payment_link trong browser để thanh toán
+### → Hoặc dùng qr_code để quét thanh toán
+### → Lưu order_code để kiểm tra trạng thái sau
+###
+
+### ============================================
+### BƯỚC 13: KIỂM TRA TRẠNG THÁI THANH TOÁN
+### ============================================
+
+GET {{baseUrl}}/payment/payos/check/{{orderCode}}
+Content-Type: application/json
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy trạng thái thanh toán thành công",
+###   "data": {
+###     "order_code": 123456789,
+###     "status": "PAID",
+###     "amount": 490000,
+###     "paid_at": "2024-11-01T10:35:00Z",
+###     "transaction_id": 1,
+###     "order": {
+###       "id": 1,
+###       "order_number": "UTE-2024-000001",
+###       "payment_status": "paid",
+###       "status_id": 2
+###     }
+###   }
+### }
+###
+### Trạng thái có thể là:
+### - PENDING: Chờ thanh toán
+### - PAID: Đã thanh toán
+### - CANCELLED: Đã hủy
+### - EXPIRED: Hết hạn
+###
+
+### ============================================
+### BƯỚC 14: XEM DANH SÁCH ĐƠN HÀNG CỦA TÔI
+### ============================================
+
+GET {{baseUrl}}/orders/my-orders?page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### Query Parameters:
+### - page: Số trang (default: 1)
+### - limit: Số lượng/trang (default: 10)
+### - status_id: Lọc theo trạng thái (optional)
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy danh sách đơn hàng thành công",
+###   "data": {
+###     "orders": [
+###       {
+###         "id": 1,
+###         "order_number": "UTE-2024-000001",
+###         "total_amount": 490000,
+###         "status_id": 2,
+###         "status_name": "processing",
+###         "payment_status": "paid",
+###         "created_at": "2024-11-01T10:30:00Z"
+###       }
+###     ],
+###     "pagination": {
+###       "current_page": 1,
+###       "per_page": 10,
+###       "total": 1,
+###       "total_pages": 1
+###     }
+###   }
+### }
+###
+
+### ============================================
+### BƯỚC 15: XEM CHI TIẾT ĐƠN HÀNG
+### ============================================
+
+GET {{baseUrl}}/orders/{{orderId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy thông tin đơn hàng thành công",
+###   "data": {
+###     "id": 1,
+###     "order_number": "UTE-2024-000001",
+###     "status_id": 2,
+###     "status_name": "processing",
+###     "subtotal": 400000,
+###     "tax_amount": 40000,
+###     "shipping_amount": 50000,
+###     "total_amount": 490000,
+###     "payment_method": "payos",
+###     "payment_status": "paid",
+###     "shipping_address": {
+###       "full_name": "Nguyễn Ngọc Huy",
+###       "phone": "0327793283",
+###       "address": "123 Đường ABC",
+###       "city": "Hồ Chí Minh"
+###     },
+###     "items": [
+###       {
+###         "id": 1,
+###         "product_id": 1,
+###         "product_name": "Áo thun nam",
+###         "quantity": 2,
+###         "unit_price": 200000,
+###         "total_price": 400000
+###       }
+###     ],
+###     "created_at": "2024-11-01T10:30:00Z"
+###   }
+### }
+###
+
+### ============================================
+### BƯỚC 16: XEM HÓA ĐƠN (Invoice)
+### ============================================
+
+GET {{baseUrl}}/orders/{{orderId}}/invoice
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy hóa đơn thành công",
+###   "data": {
+###     "order": {...},
+###     "invoice_number": "INV-2024-000001",
+###     "invoice_date": "2024-11-01T10:30:00Z"
+###   }
+### }
+###
+
+### ============================================
+### BƯỚC 17: XEM LỊCH SỬ THANH TOÁN
+### ============================================
+
+GET {{baseUrl}}/payment/my-payments?page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+### Query Parameters:
+### - page: Số trang (default: 1)
+### - limit: Số lượng/trang (default: 10)
+### - status: Lọc theo trạng thái (pending, completed, failed)
+###
+### ✅ Response thành công:
+### {
+###   "success": true,
+###   "message": "Lấy lịch sử thanh toán thành công",
+###   "data": {
+###     "payments": [
+###       {
+###         "id": 1,
+###         "order_id": 1,
+###         "amount": 490000,
+###         "status": "completed",
+###         "payment_method": "payos",
+###         "paid_at": "2024-11-01T10:35:00Z",
+###         "order_number": "UTE-2024-000001"
+###       }
+###     ],
+###     "pagination": {...}
+###   }
+### }
+###
+
+### ============================================
+### 🎉 HOÀN TẤT QUY TRÌNH ĐẶT HÀNG!
+### ============================================
+### 
+### Quy trình đã hoàn tất:
+### ✅ Đăng nhập
+### ✅ Thêm sản phẩm vào giỏ hàng
+### ✅ Xem và quản lý giỏ hàng
+### ✅ Tạo đơn hàng
+### ✅ Tạo payment link
+### ✅ Thanh toán (qua PayOS)
+### ✅ Kiểm tra trạng thái thanh toán
+### ✅ Xem đơn hàng và hóa đơn
+###
+
+### ============================================
+### ❌ CÁC TRƯỜNG HỢP LỖI VÀ XỬ LÝ
+### ============================================
+
+### Test 1: Thêm sản phẩm không tồn tại vào giỏ hàng
+POST {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "product_id": 99999,
+  "quantity": 1
+}
+
+### → Expected: 404 Not Found - "Sản phẩm không tồn tại hoặc không khả dụng"
+
+###
+### Test 2: Thêm sản phẩm với số lượng vượt quá tồn kho
+POST {{baseUrl}}/cart
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "product_id": {{productId1}},
+  "quantity": 999999
+}
+
+### → Expected: 400 Bad Request - "Số lượng sản phẩm trong kho không đủ"
+
+###
+### Test 3: Tạo đơn hàng không có sản phẩm
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "items": [],
+  "shipping_address": {...},
+  "billing_address": {...},
+  "payment_method": "payos"
+}
+
+### → Expected: 400 Bad Request - "Đơn hàng phải có ít nhất 1 sản phẩm"
+
+###
+### Test 4: Tạo đơn hàng thiếu địa chỉ
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "items": [
+    {
+      "product_id": {{productId1}},
+      "quantity": 1
+    }
+  ],
+  "payment_method": "payos"
+}
+
+### → Expected: 400 Bad Request - "Địa chỉ giao hàng và thanh toán là bắt buộc"
+
+###
+### Test 5: Tạo payment link cho đơn hàng không tồn tại
+POST {{baseUrl}}/payment/payos/create
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "order_id": 99999,
+  "description": "Test"
+}
+
+### → Expected: 404 Not Found - "Không tìm thấy đơn hàng"
+
+###
+### Test 6: Hủy đơn hàng
+POST {{baseUrl}}/orders/{{orderId}}/cancel
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Không còn muốn mua nữa"
+}
+
+### → Expected: 200 OK - Đơn hàng được hủy thành công
+### → Lưu ý: Chỉ có thể hủy đơn hàng ở trạng thái pending
+
+###
+### Test 7: Yêu cầu trả hàng
+POST {{baseUrl}}/orders/{{orderId}}/return
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "reason": "Sản phẩm bị lỗi",
+  "description": "Sản phẩm bị rách khi nhận hàng"
+}
+
+### → Expected: 200 OK - Yêu cầu trả hàng đã được gửi
+
+###
+

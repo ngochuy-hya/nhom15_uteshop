@@ -1,0 +1,798 @@
+	{
+		"info": {
+			"_postman_id": "product-apis-collection",
+			"name": "UTESHOP - Product Admin APIs",
+			"description": "Collection các API liên quan đến Product Management với Cloudinary Upload",
+			"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		},
+		"item": [
+			{
+				"name": "1. Upload Images (Cloudinary)",
+				"item": [
+					{
+						"name": "Upload Single Image",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "formdata",
+								"formdata": [
+									{
+										"key": "image",
+										"type": "file",
+										"src": []
+									},
+									{
+										"key": "folder",
+										"value": "products",
+										"type": "text"
+									}
+								]
+							},
+							"url": {
+								"raw": "{{baseUrl}}/upload/image",
+								"host": ["{{baseUrl}}"],
+								"path": ["upload", "image"]
+							}
+						}
+					},
+					{
+						"name": "Upload Multiple Images",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "formdata",
+								"formdata": [
+									{
+										"key": "images",
+										"type": "file",
+										"src": []
+									},
+									{
+										"key": "images",
+										"type": "file",
+										"src": []
+									},
+									{
+										"key": "folder",
+										"value": "products",
+										"type": "text"
+									}
+								]
+							},
+							"url": {
+								"raw": "{{baseUrl}}/upload/images",
+								"host": ["{{baseUrl}}"],
+								"path": ["upload", "images"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "2. Create Product",
+				"item": [
+					{
+						"name": "Create Product with Form-Data (Upload Images from Local)",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "formdata",
+								"formdata": [
+									{
+										"key": "name",
+										"value": "Áo Thun Nike Dri-FIT Premium",
+										"type": "text"
+									},
+									{
+										"key": "slug",
+										"value": "ao-thun-nike-dri-fit-premium-formdata",
+										"type": "text"
+									},
+									{
+										"key": "description",
+										"value": "<p>Áo thun Nike Dri-FIT công nghệ cao, thoáng khí, nhanh khô.</p>",
+										"type": "text"
+									},
+									{
+										"key": "short_description",
+										"value": "Áo thun Nike Dri-FIT công nghệ cao",
+										"type": "text"
+									},
+									{
+										"key": "sku",
+										"value": "NIKE-DRIFIT-FORMDATA-001",
+										"type": "text"
+									},
+									{
+										"key": "price",
+										"value": "599000",
+										"type": "text"
+									},
+									{
+										"key": "sale_price",
+										"value": "449000",
+										"type": "text"
+									},
+									{
+										"key": "category_id",
+										"value": "1",
+										"type": "text"
+									},
+									{
+										"key": "gender",
+										"value": "unisex",
+										"type": "text"
+									},
+									{
+										"key": "brand_id",
+										"value": "1",
+										"type": "text",
+										"description": "ID của brand (optional - có thể để trống)"
+									},
+									{
+										"key": "is_featured",
+										"value": "true",
+										"type": "text"
+									},
+									{
+										"key": "primary_image_index",
+										"value": "0",
+										"type": "text",
+										"description": "Index của ảnh primary (0 = ảnh đầu tiên)"
+									},
+									{
+										"key": "images",
+										"type": "file",
+										"src": []
+									},
+									{
+										"key": "images",
+										"type": "file",
+										"src": []
+									}
+								]
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/with-images",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", "with-images"]
+							},
+							"description": "Tạo sản phẩm với upload ảnh từ local máy tính. Ảnh sẽ tự động upload lên Cloudinary và lưu vào product_images. File đầu tiên là primary mặc định (hoặc set primary_image_index)."
+						}
+					},
+					{
+						"name": "Create Product with Form-Data + Attributes",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "formdata",
+								"formdata": [
+									{
+										"key": "name",
+										"value": "Váy Đầm Hè Zara 2024",
+										"type": "text"
+									},
+									{
+										"key": "price",
+										"value": "1290000",
+										"type": "text"
+									},
+									{
+										"key": "sale_price",
+										"value": "999000",
+										"type": "text"
+									},
+									{
+										"key": "category_id",
+										"value": "3",
+										"type": "text"
+									},
+									{
+										"key": "gender",
+										"value": "female",
+										"type": "text"
+									},
+									{
+										"key": "brand_id",
+										"value": "2",
+										"type": "text",
+										"description": "ID của brand (optional)"
+									},
+									{
+										"key": "attributes",
+										"value": "[{\"attribute_type\":\"size\",\"attribute_name\":\"Size\",\"attribute_value\":\"S\",\"price_adjustment\":0,\"stock_quantity\":30,\"is_active\":true},{\"attribute_type\":\"size\",\"attribute_name\":\"Size\",\"attribute_value\":\"M\",\"price_adjustment\":0,\"stock_quantity\":50,\"is_active\":true}]",
+										"type": "text",
+										"description": "JSON string của mảng attributes"
+									},
+									{
+										"key": "images",
+										"type": "file",
+										"src": []
+									},
+									{
+										"key": "images",
+										"type": "file",
+										"src": []
+									}
+								]
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/with-images",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", "with-images"]
+							}
+						}
+					},
+					{
+						"name": "Create Product with Images & Attributes",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"name\": \"Áo Thun Nike Dri-FIT Premium\",\n  \"slug\": \"ao-thun-nike-dri-fit-premium\",\n  \"description\": \"<p>Áo thun Nike Dri-FIT công nghệ cao, thoáng khí, nhanh khô.</p>\",\n  \"short_description\": \"Áo thun Nike Dri-FIT công nghệ cao\",\n  \"sku\": \"NIKE-DRIFIT-001\",\n  \"price\": 599000,\n  \"sale_price\": 449000,\n  \"cost_price\": 300000,\n  \"category_id\": 1,\n  \"gender\": \"unisex\",\n  \"season\": \"all\",\n  \"brand_id\": 1,\n  \"is_featured\": true,\n  \"is_trending\": true,\n  \"is_bestseller\": false,\n  \"is_new\": true,\n  \"is_sale\": true,\n  \"images\": [\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-main.jpg\",\n      \"is_primary\": true,\n      \"sort_order\": 1\n    },\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-2.jpg\",\n      \"is_primary\": false,\n      \"sort_order\": 2\n    }\n  ],\n  \"attributes\": [\n    {\n      \"attribute_type\": \"size\",\n      \"attribute_name\": \"Size\",\n      \"attribute_value\": \"S\",\n      \"price_adjustment\": 0,\n      \"stock_quantity\": 50,\n      \"is_active\": true\n    },\n    {\n      \"attribute_type\": \"size\",\n      \"attribute_name\": \"Size\",\n      \"attribute_value\": \"M\",\n      \"price_adjustment\": 0,\n      \"stock_quantity\": 80,\n      \"is_active\": true\n    }\n  ]\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products",
+								"host": ["{{baseUrl}}"],
+								"path": ["products"]
+							}
+						}
+					},
+					{
+						"name": "Create Product with Images only (no Attributes)",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"name\": \"Quần Jean Zara Classic\",\n  \"slug\": \"quan-jean-zara-classic\",\n  \"description\": \"<p>Quần jean Zara classic fit, chất liệu denim cao cấp.</p>\",\n  \"short_description\": \"Quần jean Zara classic fit\",\n  \"sku\": \"ZARA-JEAN-001\",\n  \"price\": 890000,\n  \"sale_price\": null,\n  \"cost_price\": 500000,\n  \"category_id\": 2,\n  \"gender\": \"unisex\",\n  \"season\": \"all\",\n  \"brand_id\": 2,\n  \"is_featured\": false,\n  \"is_trending\": false,\n  \"is_bestseller\": false,\n  \"is_new\": true,\n  \"is_sale\": false,\n  \"images\": [\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/zara-jean-main.jpg\",\n      \"is_primary\": true,\n      \"sort_order\": 1\n    }\n  ]\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products",
+								"host": ["{{baseUrl}}"],
+								"path": ["products"]
+							}
+						}
+					},
+					{
+						"name": "Create Product - Minimal (required fields + images)",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"name\": \"Sản phẩm cơ bản\",\n  \"price\": 100000,\n  \"category_id\": 1,\n  \"images\": [\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/basic-product.jpg\",\n      \"is_primary\": true,\n      \"sort_order\": 1\n    }\n  ]\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products",
+								"host": ["{{baseUrl}}"],
+								"path": ["products"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "3. Get Product",
+				"item": [
+					{
+						"name": "Get Product by ID (Admin - All data)",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{baseUrl}}/products/admin/:id",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", "admin", ":id"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Get Product by ID (User - Public)",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{baseUrl}}/products/:id",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Get Products List",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{baseUrl}}/products?page=1&limit=12&sort_by=price&sort_order=ASC",
+								"host": ["{{baseUrl}}"],
+								"path": ["products"],
+								"query": [
+									{
+										"key": "page",
+										"value": "1"
+									},
+									{
+										"key": "limit",
+										"value": "12"
+									},
+									{
+										"key": "sort_by",
+										"value": "price"
+									},
+									{
+										"key": "sort_order",
+										"value": "ASC"
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "4. Update Product",
+				"item": [
+					{
+						"name": "Update Product - Full",
+						"request": {
+							"method": "PUT",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"name\": \"Áo Thun Nike Dri-FIT Premium (Updated)\",\n  \"description\": \"<p>Áo thun Nike Dri-FIT công nghệ cao, CẬP NHẬT MỚI.</p>\",\n  \"sale_price\": 399000,\n  \"price\": 649000,\n  \"is_featured\": false,\n  \"is_active\": true,\n  \"images\": [\n    {\n      \"id\": 1,\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-main.jpg\",\n      \"is_primary\": true,\n      \"sort_order\": 1\n    },\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-new.jpg\",\n      \"is_primary\": false,\n      \"sort_order\": 5\n    }\n  ],\n  \"attributes\": [\n    {\n      \"id\": 1,\n      \"attribute_type\": \"size\",\n      \"attribute_name\": \"Size\",\n      \"attribute_value\": \"S\",\n      \"price_adjustment\": 0,\n      \"stock_quantity\": 60,\n      \"is_active\": true\n    },\n    {\n      \"attribute_type\": \"size\",\n      \"attribute_name\": \"Size\",\n      \"attribute_value\": \"XL\",\n      \"price_adjustment\": 50000,\n      \"stock_quantity\": 40,\n      \"is_active\": true\n    }\n  ]\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/:id",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Update Product - Partial",
+						"request": {
+							"method": "PUT",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"price\": 649000,\n  \"is_featured\": false,\n  \"is_active\": true\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/:id",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "5. Product Images",
+				"item": [
+					{
+						"name": "Upload Images to Product",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"images\": [\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-detail-1.jpg\",\n      \"is_primary\": false,\n      \"sort_order\": 10\n    },\n    {\n      \"image_url\": \"https://res.cloudinary.com/your_cloud/image/upload/v1234567890/products/product-detail-2.jpg\",\n      \"is_primary\": false,\n      \"sort_order\": 11\n    }\n  ]\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/:id/images",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id", "images"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Delete Product Image",
+						"request": {
+							"method": "DELETE",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{baseUrl}}/products/:id/images/:imageId",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id", "images", ":imageId"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									},
+									{
+										"key": "imageId",
+										"value": "5",
+										"description": "Image ID"
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "6. Product Attributes",
+				"item": [
+					{
+						"name": "Add Attribute to Product",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"attribute_type\": \"size\",\n  \"attribute_name\": \"Size\",\n  \"attribute_value\": \"XL\",\n  \"price_adjustment\": 50000,\n  \"stock_quantity\": 40,\n  \"is_active\": true\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/:id/attributes",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id", "attributes"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Update Attribute",
+						"request": {
+							"method": "PUT",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"type": "text"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"attribute_type\": \"size\",\n  \"attribute_name\": \"Size\",\n  \"attribute_value\": \"S\",\n  \"price_adjustment\": 0,\n  \"stock_quantity\": 100,\n  \"is_active\": true\n}"
+							},
+							"url": {
+								"raw": "{{baseUrl}}/products/:id/attributes/:attrId",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id", "attributes", ":attrId"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									},
+									{
+										"key": "attrId",
+										"value": "1",
+										"description": "Attribute ID"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Delete Attribute",
+						"request": {
+							"method": "DELETE",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{baseUrl}}/products/:id/attributes/:attrId",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id", "attributes", ":attrId"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									},
+									{
+										"key": "attrId",
+										"value": "1",
+										"description": "Attribute ID"
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "7. Delete Product",
+				"item": [
+					{
+						"name": "Delete Product (Soft Delete)",
+						"request": {
+							"method": "DELETE",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{adminToken}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{baseUrl}}/products/:id",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id"],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "8. Product Lists",
+				"item": [
+					{
+						"name": "Get Featured Products",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{baseUrl}}/products/featured?limit=12",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", "featured"],
+								"query": [
+									{
+										"key": "limit",
+										"value": "12"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Get New Products",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{baseUrl}}/products/new?limit=12&days=30",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", "new"],
+								"query": [
+									{
+										"key": "limit",
+										"value": "12"
+									},
+									{
+										"key": "days",
+										"value": "30"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Get Best Seller Products",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{baseUrl}}/products/bestseller?limit=12",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", "bestseller"],
+								"query": [
+									{
+										"key": "limit",
+										"value": "12"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Get Related Products",
+						"request": {
+							"method": "GET",
+							"header": [],
+							"url": {
+								"raw": "{{baseUrl}}/products/:id/related?limit=4",
+								"host": ["{{baseUrl}}"],
+								"path": ["products", ":id", "related"],
+								"query": [
+									{
+										"key": "limit",
+										"value": "4"
+									}
+								],
+								"variable": [
+									{
+										"key": "id",
+										"value": "1",
+										"description": "Product ID"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		],
+		"variable": [
+			{
+				"key": "baseUrl",
+				"value": "http://localhost:5000/api",
+				"type": "string"
+			},
+			{
+				"key": "adminToken",
+				"value": "YOUR_ADMIN_TOKEN_HERE",
+				"type": "string"
+			}
+		]
+	}
+

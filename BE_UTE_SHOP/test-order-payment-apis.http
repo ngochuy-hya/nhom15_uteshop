@@ -1,0 +1,107 @@
+### ============================================
+### Order & Payment APIs - REST Client Tests
+### ============================================
+
+@host = http://localhost:5000
+@userToken = {{YOUR_USER_JWT}}
+@adminToken = {{YOUR_ADMIN_JWT}}
+@orderId = 1
+@orderCode = 1234567890
+@transactionId = 1
+
+### --------------------------------------------
+### ORDERS - My orders
+### --------------------------------------------
+GET {{host}}/api/orders/my-orders?page=1&limit=10
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### --------------------------------------------
+### ORDERS - Get order detail
+### --------------------------------------------
+GET {{host}}/api/orders/{{orderId}}
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### --------------------------------------------
+### ORDERS - Get invoice
+### --------------------------------------------
+GET {{host}}/api/orders/{{orderId}}/invoice
+Authorization: Bearer {{userToken}}
+Accept: application/json
+
+### --------------------------------------------
+### ORDERS - Cancel order (User)
+### Note: only allowed for pending/processing or eligible paid orders
+### --------------------------------------------
+POST {{host}}/api/orders/{{orderId}}/cancel
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "reason": "Khach hang muon huy don"
+}
+
+### --------------------------------------------
+### ORDERS - Request return (User)
+### Note: only when delivered (status_id = 4) within 7 days
+### --------------------------------------------
+POST {{host}}/api/orders/{{orderId}}/return
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "reason": "San pham loi",
+  "items": [
+    { "product_id": 1, "quantity": 1 }
+  ]
+}
+
+### --------------------------------------------
+### PAYMENT - Create PayOS payment link (User)
+### --------------------------------------------
+POST {{host}}/api/payment/payos/create
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "order_id": {{orderId}}
+}
+
+### --------------------------------------------
+### PAYMENT - Check PayOS payment status (Public)
+### --------------------------------------------
+GET {{host}}/api/payment/payos/check/{{orderCode}}
+Accept: application/json
+
+### --------------------------------------------
+### PAYMENT - Cancel payment (User)
+### --------------------------------------------
+POST {{host}}/api/payment/cancel
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "transaction_id": {{transactionId}}
+}
+
+### --------------------------------------------
+### PAYMENT - Refund payment (User)
+### Note: amount optional; if omitted, refund full
+### --------------------------------------------
+POST {{host}}/api/payment/refund
+Authorization: Bearer {{userToken}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "orderCode": "{{orderCode}}",
+  "amount": 100000,
+  "reason": "Khach hang yeu cau refund"
+}
+
+
