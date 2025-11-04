@@ -118,7 +118,7 @@ FINAL_UTELSHOP/
 - **Framework**: React 19
 - **Language**: TypeScript
 - **Build Tool**: Vite
-- **Styling**: SCSS, Bootstrap 5
+- **Styling**: Talwind CSSCSS
 - **Routing**: React Router DOM
 - **State Management**: React Context API
 - **HTTP Client**: Axios
